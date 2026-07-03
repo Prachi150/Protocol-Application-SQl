@@ -10,7 +10,7 @@ SVC="${APP_NAME:-ioconnect-sql}"
 
 # ── Production path ──
 if command -v systemctl >/dev/null 2>&1 && systemctl cat "${SVC}.service" >/dev/null 2>&1; then
-    systemctl restart "${SVC}.service"
+    sudo -n systemctl restart "${SVC}.service"
     exit $?
 fi
 

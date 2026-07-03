@@ -1,0 +1,21 @@
+[Unit]
+# Adapter service. @@SQL_DIR@@ and @@PY@@ are substituted by install-services.sh.
+Description=IoConnect SQL polling adapter
+After=network.target mariadb.service ioconnect-sql-configurator.service
+Wants=mariadb.service
+
+[Service]
+Type=simple
+User=@@USER@@
+WorkingDirectory=@@SQL_DIR@@
+Environment=FILES_BASE_DIR=@@SQL_DIR@@/data
+Environment=METRICS_PORT=9470
+Environment=SERVICE_NAME=ioconnect-sql
+Environment=LOG_DIR=@@SQL_DIR@@/logs
+Environment=HTTP_POST_URL=http://localhost:6767/api/monitor/ingest
+ExecStart=@@PY@@ src/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

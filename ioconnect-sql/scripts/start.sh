@@ -14,7 +14,7 @@ SVC="${APP_NAME:-ioconnect-sql}"
 
 # ── Production path: systemd unit present ──
 if command -v systemctl >/dev/null 2>&1 && systemctl cat "${SVC}.service" >/dev/null 2>&1; then
-    systemctl start "${SVC}.service"
+    sudo -n systemctl start "${SVC}.service"
     exit $?
 fi
 
