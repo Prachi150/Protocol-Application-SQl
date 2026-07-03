@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# IDE
+.vscode/
+.idea/
+
+# Build output
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+#postman
+postman/
+test/
+
+#config
+config/app-registry.json
+config/scheduled-restarts.json
+config/recurring-schedules.json
+apps/
+
+# Offline broker packages (use data-broker/redpanda/download-packages.sh to populate)
+data-broker/redpanda/packages/*.deb
+
+# Staging files for atomic config writes (cleaned up after deploy)
+data-broker/redpanda/staging/*
+!data-broker/redpanda/staging/.gitkeep
+CLAUDE.md
+.claude/

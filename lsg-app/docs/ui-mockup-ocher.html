@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faclon I/OConnect — UI Mockup (Ocher Dark)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design Tokens ──────────────────────────────────────────────────── */
+    :root {
+      --font-ui:   'IBM Plex Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      /* Light theme */
+      --bg:           #F4F6FB;
+      --surface:      #FFFFFF;
+      --elevated:     #EDF0F7;
+      --border:       rgba(0, 0, 0, 0.09);
+      --border-mid:   rgba(0, 0, 0, 0.14);
+
+      --accent:        #2f55d4;
+      --accent-sub:    rgba(47, 85, 212, 0.09);
+      --accent-border: rgba(47, 85, 212, 0.22);
+      --accent-text:   #2f55d4;    /* used for labels/text */
+
+      --success:      #15803d;
+      --success-sub:  rgba(21, 128, 61, 0.09);
+      --warning:      #b45309;
+      --warning-sub:  rgba(180, 83, 9, 0.09);
+      --danger:       #b91c1c;
+      --danger-sub:   rgba(185, 28, 28, 0.09);
+      --neutral-sub:  rgba(0, 0, 0, 0.05);
+
+      --text-1: #111827;
+      --text-2: #4B5563;
+      --text-3: #9CA3AF;
+      --sidebar-w: 62px;
+      --sidebar-exp: 256px;
+      --radius: 8px;
+    }
+
+    html.dark {
+      --bg:           #111113;
+      --surface:      #1c1c1f;
+      --elevated:     #252528;
+      --border:       rgba(255, 255, 255, 0.08);
+      --border-mid:   rgba(255, 255, 255, 0.13);
+
+      /* Clean orange accent on cool dark base */
+      --accent:        #e8650a;
+      --accent-sub:    rgba(232, 101, 10, 0.12);
+      --accent-border: rgba(232, 101, 10, 0.28);
+      --accent-text:   #fb923c;   /* orange-400 — bright enough on dark */
+
+      --success:      #34d399;
+      --success-sub:  rgba(52, 211, 153, 0.10);
+      --warning:      #fbbf24;
+      --warning-sub:  rgba(251, 191, 36, 0.10);
+      --danger:       #f87171;
+      --danger-sub:   rgba(248, 113, 113, 0.10);
+      --neutral-sub:  rgba(255, 255, 255, 0.05);
+
+      --text-1: #e8edf5;
+      --text-2: #8b95a9;
+      --text-3: #576070;
+    }
+
+    /* ── Reset ──────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font-ui);
+      background: var(--bg);
+      color: var(--text-1);
+      display: flex;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Sidebar ────────────────────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      transition: width 0.22s ease;
+      overflow: hidden;
+      flex-shrink: 0;
+      z-index: 50;
+    }
+    .sidebar:hover { width: var(--sidebar-exp); }
+
+    .sidebar-logo {
+      height: 64px; min-height: 64px;
+      display: flex; align-items: center;
+      padding: 0 13px; gap: 12px;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .logo-mark {
+      width: 34px; height: 34px; min-width: 34px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+    .logo-copy { opacity: 0; transition: opacity 0.15s 0.05s; white-space: nowrap; overflow: hidden; }
+    .sidebar:hover .logo-copy { opacity: 1; }
+    .logo-copy strong { display: block; font-size: 13.5px; font-weight: 700; color: var(--text-1); }
+    .logo-copy small  { font-size: 11.5px; color: var(--text-3); font-weight: 400; }
+
+    .nav { padding: 10px 8px; flex: 1; overflow: hidden; }
+    .nav-item {
+      display: flex; align-items: center;
+      gap: 11px; padding: 9px 11px;
+      border-radius: var(--radius);
+      cursor: pointer; overflow: hidden; white-space: nowrap;
+      color: var(--text-2);
+      transition: background 0.13s, color 0.13s;
+      margin-bottom: 2px;
+      position: relative;
+    }
+    .nav-item:hover { background: var(--elevated); color: var(--text-1); }
+    .nav-item.active { background: var(--accent-sub); color: var(--accent-text); }
+    .nav-item.active::before {
+      content: '';
+      position: absolute; left: 0; top: 24%; bottom: 24%;
+      width: 3px; background: var(--accent);
+      border-radius: 0 3px 3px 0;
+    }
+    .nav-icon { width: 20px; min-width: 20px; display: flex; align-items: center; justify-content: center; }
+    .nav-icon svg { width: 17px; height: 17px; }
+    .nav-label { font-size: 13.5px; font-weight: 500; opacity: 0; transition: opacity 0.14s 0.04s; }
+    .sidebar:hover .nav-label { opacity: 1; }
+
+    .sidebar-foot { padding: 8px; border-top: 1px solid var(--border); }
+    .user-row {
+      display: flex; align-items: center; gap: 11px;
+      padding: 9px 11px; border-radius: var(--radius);
+      cursor: pointer; overflow: hidden;
+      color: var(--text-2); transition: background 0.13s;
+    }
+    .user-row:hover { background: var(--elevated); color: var(--text-1); }
+    .avatar {
+      width: 30px; height: 30px; min-width: 30px;
+      border-radius: 50%;
+      background: var(--accent-sub);
+      border: 1px solid var(--accent-border);
+      color: var(--accent-text);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; flex-shrink: 0;
+    }
+    .user-copy { opacity: 0; transition: opacity 0.14s 0.04s; white-space: nowrap; }
+    .sidebar:hover .user-copy { opacity: 1; }
+    .user-copy p    { font-size: 13.5px; font-weight: 600; color: var(--text-1); }
+    .user-copy span { font-size: 12px; color: var(--text-3); }
+
+    /* ── Main ───────────────────────────────────────────────────────────── */
+    .main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; min-width: 0; }
+
+    /* ── Topbar ─────────────────────────────────────────────────────────── */
+    .topbar {
+      height: 64px; min-height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 26px;
+    }
+    .topbar-left h1 { font-size: 16px; font-weight: 600; color: var(--text-1); }
+    .topbar-left p  { font-size: 12.5px; color: var(--text-3); margin-top: 1px; font-family: var(--font-mono); }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 13px;
+    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+    .status-pill span  { color: var(--text-2); }
+    .status-pill strong { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-1); font-weight: 500; }
+
+    .topbar-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+    .topbar-meta label { font-size: 10px; color: var(--text-3); letter-spacing: 0.6px; text-transform: uppercase; }
+    .topbar-meta value { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-1); font-weight: 500; }
+
+    .divider { width: 1px; height: 26px; background: var(--border); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 15px;
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; font-family: var(--font-ui);
+      transition: background 0.13s;
+      border: 1px solid var(--border-mid);
+      background: var(--surface); color: var(--text-1);
+    }
+    .btn:hover { background: var(--elevated); }
+    .btn svg { width: 14px; height: 14px; }
+
+    .icon-btn {
+      padding: 7px 9px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer; color: var(--text-2);
+      transition: background 0.13s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .icon-btn:hover { background: var(--border); color: var(--text-1); }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* ── Tabs ───────────────────────────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 26px;
+      overflow-x: auto;
+    }
+    .tab {
+      font-size: 13px; font-weight: 500;
+      padding: 11px 15px;
+      cursor: pointer; color: var(--text-3);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.13s, border-color 0.13s;
+    }
+    .tab:hover { color: var(--text-1); }
+    .tab.active { color: var(--accent-text); border-bottom-color: var(--accent); }
+
+    /* ── Content ────────────────────────────────────────────────────────── */
+    .content {
+      flex: 1; overflow-y: auto;
+      padding: 22px 24px;
+      scrollbar-width: thin; scrollbar-color: var(--elevated) transparent;
+    }
+    .content::-webkit-scrollbar { width: 4px; }
+    .content::-webkit-scrollbar-thumb { background: var(--elevated); border-radius: 2px; }
+
+    /* ── Stat Strip ─────────────────────────────────────────────────────── */
+    .stats-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .stat-icon { width: 36px; height: 36px; min-width: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .stat-icon svg { width: 17px; height: 17px; }
+    .stat-body h3 { font-family: var(--font-mono); font-size: 24px; font-weight: 600; color: var(--text-1); line-height: 1; margin-bottom: 4px; }
+    .stat-body p  { font-size: 13px; color: var(--text-2); }
+    .stat-badge {
+      margin-left: auto; font-size: 12px; font-weight: 500;
+      padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* ── Colour helpers ─────────────────────────────────────────────────── */
+    .c-accent   { color: var(--accent-text); }
+    .c-success  { color: var(--success); }
+    .c-warning  { color: var(--warning); }
+    .c-danger   { color: var(--danger); }
+    .bg-accent-sub  { background: var(--accent-sub); }
+    .bg-success-sub { background: var(--success-sub); }
+    .bg-warning-sub { background: var(--warning-sub); }
+    .bg-danger-sub  { background: var(--danger-sub); }
+    .badge-success { background: var(--success-sub); color: var(--success); }
+    .badge-warning { background: var(--warning-sub); color: var(--warning); }
+    .badge-danger  { background: var(--danger-sub);  color: var(--danger); }
+    .badge-accent  { background: var(--accent-sub);  color: var(--accent-text); }
+    .badge-neutral { background: var(--neutral-sub); color: var(--text-2); }
+
+    /* ── Grid ───────────────────────────────────────────────────────────── */
+    .grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .grid-3   { display: grid; grid-template-columns: 1.05fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .col-stack { display: flex; flex-direction: column; gap: 12px; }
+
+    /* ── Panel ──────────────────────────────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-title { display: flex; align-items: center; gap: 10px; }
+    .panel-icon  { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .panel-icon svg { width: 15px; height: 15px; }
+    .panel-title h2  { font-size: 14px; font-weight: 600; color: var(--text-1); }
+    .panel-title p   { font-size: 12.5px; color: var(--text-3); margin-top: 1px; }
+    .panel-body { padding: 16px 18px; }
+
+    /* ── Chip ───────────────────────────────────────────────────────────── */
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 5px;
+      font-size: 12.5px; font-weight: 500;
+    }
+    .chip-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+    /* ── Row pairs ──────────────────────────────────────────────────────── */
+    .row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .row:last-child { border-bottom: none; padding-bottom: 0; }
+    .row:first-child { padding-top: 0; }
+    .row-label { font-size: 13.5px; color: var(--text-2); }
+    .row-value { font-family: var(--font-mono); font-size: 13px; color: var(--text-1); font-weight: 500; }
+
+    /* ── Interface cards ────────────────────────────────────────────────── */
+    .iface {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 13px;
+      margin-bottom: 7px;
+    }
+    .iface:last-child { margin-bottom: 0; }
+    .iface-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .iface-name { font-family: var(--font-mono); font-size: 13px; font-weight: 500; min-width: 58px; color: var(--text-1); }
+    .iface-addr { font-family: var(--font-mono); font-size: 13px; color: var(--accent-text); flex: 1; }
+    .iface-tag  { font-size: 12px; color: var(--text-3); background: var(--surface); border: 1px solid var(--border); padding: 2px 8px; border-radius: 4px; }
+
+    /* ── App rows ───────────────────────────────────────────────────────── */
+    .app-row {
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .app-row:last-child { border-bottom: none; }
+    .app-badge { width: 32px; height: 32px; min-width: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+    .app-info { flex: 1; min-width: 0; }
+    .app-info p    { font-size: 13.5px; font-weight: 500; color: var(--text-1); }
+    .app-info span { font-size: 12px; color: var(--text-3); }
+    .app-port { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); background: var(--elevated); padding: 3px 8px; border-radius: 4px; }
+
+    /* ── Pipeline rows ──────────────────────────────────────────────────── */
+    .pipeline {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 13px; margin-bottom: 7px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .pipeline:last-child { margin-bottom: 0; }
+    .pipe-flow { flex: 1; display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 12.5px; }
+    .pipe-node { padding: 3px 9px; border-radius: 4px; }
+    .pipe-arrow { color: var(--text-3); }
+    .pipe-src { background: var(--accent-sub);  color: var(--accent-text); }
+    .pipe-mid { background: var(--elevated); color: var(--text-2); border: 1px solid var(--border); }
+    .pipe-dst { background: var(--success-sub); color: var(--success); }
+    .pipe-rate { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+
+    /* ── Schedules ──────────────────────────────────────────────────────── */
+    .sched-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .sched-row:last-child { border-bottom: none; }
+    .sched-icon { width: 30px; height: 30px; background: var(--elevated); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sched-icon svg { width: 14px; height: 14px; color: var(--text-3); }
+    .sched-info { flex: 1; }
+    .sched-info p    { font-size: 13.5px; font-weight: 500; color: var(--text-1); }
+    .sched-info span { font-size: 12.5px; color: var(--text-3); }
+
+    /* ── Gauge ──────────────────────────────────────────────────────────── */
+    .gauge-row { margin-bottom: 10px; }
+    .gauge-row:last-child { margin-bottom: 0; }
+    .gauge-hd { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .gauge-hd span { font-size: 13px; color: var(--text-2); }
+    .gauge-hd value { font-family: var(--font-mono); font-size: 13px; color: var(--text-1); }
+    .gauge-track { height: 4px; background: var(--elevated); border-radius: 2px; overflow: hidden; }
+    .gauge-fill  { height: 100%; border-radius: 2px; }
+
+    /* ── Section label ──────────────────────────────────────────────────── */
+    .section-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+
+    /* ── Animations ─────────────────────────────────────────────────────── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .a1 { animation: fadeUp .3s ease both .04s; }
+    .a2 { animation: fadeUp .3s ease both .08s; }
+    .a3 { animation: fadeUp .3s ease both .12s; }
+    .a4 { animation: fadeUp .3s ease both .16s; }
+    .a5 { animation: fadeUp .3s ease both .20s; }
+    .a6 { animation: fadeUp .3s ease both .24s; }
+    .a7 { animation: fadeUp .3s ease both .28s; }
+
+    /* ── Watermark ──────────────────────────────────────────────────────── */
+    .watermark {
+      position: fixed; bottom: 14px; right: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; color: var(--text-3); z-index: 200;
+    }
+    .watermark strong { color: var(--accent-text); }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">I/O</div>
+    <div class="logo-copy">
+      <strong>Faclon I/OConnect</strong>
+      <small>Management Portal</small>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-item active">
+      <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg></div>
+      <span class="nav-label">Overview</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"/></svg></div>
+      <span class="nav-label">Network</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg></div>
+      <span class="nav-label">Remote</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"/></svg></div>
+      <span class="nav-label">Protocol Apps</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg></div>
+      <span class="nav-label">Data Forwarding</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg></div>
+      <span class="nav-label">Onboarding</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-foot">
+    <div class="nav-item" id="themeToggle" style="margin-bottom:4px">
+      <div class="nav-icon">
+        <svg id="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg id="icon-moon" style="display:none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </div>
+      <span class="nav-label" id="themeLabel">Light Mode</span>
+    </div>
+    <div class="user-row">
+      <div class="avatar">A</div>
+      <div class="user-copy">
+        <p>admin</p>
+        <span>Account</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Main ──────────────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>System Overview</h1>
+      <p id="panel-time">Loading…</p>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        <span>Device</span>
+        <strong>ioconnect-edge-01</strong>
+      </div>
+      <div class="topbar-meta">
+        <label>Uptime</label>
+        <value>14d 07h 32m</value>
+      </div>
+      <div class="divider"></div>
+      <div class="topbar-meta">
+        <label>Local time</label>
+        <value id="clock">—</value>
+      </div>
+      <div class="divider"></div>
+      <button class="btn">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <span class="tab active">Overview</span>
+    <span class="tab">Network</span>
+    <span class="tab">Remote</span>
+    <span class="tab">Protocol Apps</span>
+    <span class="tab">Data Forwarding</span>
+    <span class="tab">Onboarding</span>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Stat strip -->
+    <div class="stats-strip">
+      <div class="stat-card a1">
+        <div class="stat-icon bg-success-sub c-success"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"/></svg></div>
+        <div class="stat-body"><h3>eth0</h3><p>Internet connected</p></div>
+        <span class="stat-badge badge-success">Online</span>
+      </div>
+      <div class="stat-card a2">
+        <div class="stat-icon bg-accent-sub c-accent"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg></div>
+        <div class="stat-body"><h3>12</h3><p>Firewall rules active</p></div>
+        <span class="stat-badge badge-success">Enabled</span>
+      </div>
+      <div class="stat-card a3">
+        <div class="stat-icon bg-accent-sub c-accent"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"/></svg></div>
+        <div class="stat-body"><h3>3</h3><p>Protocol apps installed</p></div>
+        <span class="stat-badge badge-accent">2 running</span>
+      </div>
+      <div class="stat-card a4">
+        <div class="stat-icon bg-success-sub c-success"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg></div>
+        <div class="stat-body"><h3>2</h3><p>Forwarding pipelines</p></div>
+        <span class="stat-badge badge-success">Active</span>
+      </div>
+    </div>
+
+    <!-- Row 1: Network + Firewall & Time -->
+    <div class="grid-2">
+      <div class="panel a3">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-icon bg-success-sub c-success"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"/></svg></div>
+            <div><h2>Network Interfaces</h2><p>4 interfaces detected</p></div>
+          </div>
+          <span class="chip badge-success"><span class="chip-dot" style="background:var(--success)"></span>Internet OK</span>
+        </div>
+        <div class="panel-body">
+          <div class="iface"><div class="iface-dot" style="background:var(--success)"></div><span class="iface-name">eth0</span><span class="iface-addr">192.168.1.100 / 24</span><span class="iface-tag">Ethernet</span></div>
+          <div class="iface"><div class="iface-dot" style="background:var(--success)"></div><span class="iface-name">wlan0</span><span class="iface-addr">10.0.0.5 / 24</span><span class="iface-tag">Wi-Fi</span></div>
+          <div class="iface"><div class="iface-dot" style="background:var(--success)"></div><span class="iface-name">tun0</span><span class="iface-addr">10.8.0.5 / 24</span><span class="iface-tag">VPN</span></div>
+          <div class="iface"><div class="iface-dot" style="background:var(--text-3)"></div><span class="iface-name" style="color:var(--text-3)">docker0</span><span class="iface-addr" style="color:var(--text-3)">172.17.0.1 / 16</span><span class="iface-tag">Bridge</span></div>
+        </div>
+      </div>
+
+      <div class="col-stack">
+        <div class="panel a4">
+          <div class="panel-head">
+            <div class="panel-title">
+              <div class="panel-icon bg-accent-sub c-accent"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg></div>
+              <div><h2>Firewall</h2><p>UFW</p></div>
+            </div>
+            <span class="chip badge-success"><span class="chip-dot" style="background:var(--success)"></span>Enabled</span>
+          </div>
+          <div class="panel-body">
+            <div class="row"><span class="row-label">Active rules</span><span class="row-value">12</span></div>
+            <div class="row"><span class="row-label">Default inbound</span><span class="chip badge-warning">DENY</span></div>
+            <div class="row"><span class="row-label">Logging level</span><span class="chip badge-neutral">Low</span></div>
+          </div>
+        </div>
+        <div class="panel a5">
+          <div class="panel-head">
+            <div class="panel-title">
+              <div class="panel-icon bg-accent-sub c-accent"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+              <div><h2>System Time</h2><p>NTP synchronized</p></div>
+            </div>
+            <span class="chip badge-success"><span class="chip-dot" style="background:var(--success)"></span>NTP On</span>
+          </div>
+          <div class="panel-body">
+            <div class="row"><span class="row-label">Timezone</span><span class="row-value">Asia/Kolkata</span></div>
+            <div class="row"><span class="row-label">NTP server</span><span class="row-value">ntp.ubuntu.com</span></div>
+            <div class="row"><span class="row-label">Current time</span><span class="row-value" id="sysTime">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: VPN + Protocol Apps + Schedules -->
+    <div class="grid-3">
+      <div class="panel a4">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-icon bg-accent-sub c-accent"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg></div>
+            <div><h2>VPN Tunnel</h2><p>WireGuard</p></div>
+          </div>
+          <span class="chip badge-success"><span class="chip-dot" style="background:var(--success)"></span>Active</span>
+        </div>
+        <div class="panel-body">
+          <div class="row"><span class="row-label">VPN IP</span><span class="row-value c-accent">10.8.0.5</span></div>
+          <div class="row"><span class="row-label">Endpoint</span><span class="row-value">vpn.faclon.io</span></div>
+          <div class="row"><span class="row-label">Last handshake</span><span class="row-value">2m ago</span></div>
+          <div class="row"><span class="row-label">Configuration</span><span class="chip badge-success">Configured</span></div>
+        </div>
+      </div>
+
+      <div class="panel a5">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-icon bg-accent-sub c-accent"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"/></svg></div>
+            <div><h2>Protocol Apps</h2><p>3 installed · 2 running</p></div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="app-row">
+            <div class="app-badge bg-success-sub c-success">MB</div>
+            <div class="app-info"><p>modbus-tcp</p><span>v2.1.4</span></div>
+            <span class="app-port">:502</span>
+            <span class="chip badge-success">Running</span>
+          </div>
+          <div class="app-row">
+            <div class="app-badge bg-accent-sub c-accent">UA</div>
+            <div class="app-info"><p>opc-ua</p><span>v3.0.1</span></div>
+            <span class="app-port">:4840</span>
+            <span class="chip badge-success">Running</span>
+          </div>
+          <div class="app-row">
+            <div class="app-badge bg-danger-sub c-danger">BN</div>
+            <div class="app-info"><p>bacnet-ip</p><span>v1.4.0</span></div>
+            <span class="app-port">:47808</span>
+            <span class="chip badge-danger">Stopped</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel a6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-icon bg-warning-sub c-warning"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg></div>
+            <div><h2>Restart Schedules</h2><p>2 active</p></div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="sched-row">
+            <div class="sched-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+            <div class="sched-info"><p>Daily restart</p><span>Every day at 03:00</span></div>
+            <span class="chip badge-accent">Recurring</span>
+          </div>
+          <div class="sched-row">
+            <div class="sched-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+            <div class="sched-info"><p>Weekly restart</p><span>Every Sunday at 00:00</span></div>
+            <span class="chip badge-accent">Recurring</span>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <span class="row-label">Next restart in</span>
+            <span class="row-value c-warning">6h 28m</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Data Forwarding -->
+    <div class="panel a7" style="margin-bottom:16px">
+      <div class="panel-head">
+        <div class="panel-title">
+          <div class="panel-icon bg-success-sub c-success"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg></div>
+          <div><h2>Data Forwarding</h2><p>Redpanda broker · 2 active pipelines</p></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="chip badge-success"><span class="chip-dot" style="background:var(--success)"></span>Broker running</span>
+          <span class="chip badge-neutral">1.4k msg/s</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <p class="section-label">Active Pipelines</p>
+            <div class="pipeline">
+              <div class="pipe-flow">
+                <span class="pipe-node pipe-src">plant-floor</span>
+                <span class="pipe-arrow">→</span>
+                <span class="pipe-node pipe-mid">redpanda</span>
+                <span class="pipe-arrow">→</span>
+                <span class="pipe-node pipe-dst">ioadmin</span>
+              </div>
+              <span class="chip badge-success" style="font-size:12px">Active</span>
+              <span class="pipe-rate">842 msg/s</span>
+            </div>
+            <div class="pipeline">
+              <div class="pipe-flow">
+                <span class="pipe-node pipe-src">hvac-sensors</span>
+                <span class="pipe-arrow">→</span>
+                <span class="pipe-node pipe-mid">redpanda</span>
+                <span class="pipe-arrow">→</span>
+                <span class="pipe-node pipe-dst">ioadmin</span>
+              </div>
+              <span class="chip badge-success" style="font-size:12px">Active</span>
+              <span class="pipe-rate">558 msg/s</span>
+            </div>
+          </div>
+          <div>
+            <p class="section-label">Broker Health</p>
+            <div class="row"><span class="row-label">Topics</span><span class="row-value">8</span></div>
+            <div class="row"><span class="row-label">Consumer lag</span><span class="row-value c-success">0 ms</span></div>
+            <div class="row" style="border:none;padding-bottom:0;margin-bottom:12px"><span class="row-label">Forwarded today</span><span class="row-value">142.6 M</span></div>
+            <div class="gauge-row">
+              <div class="gauge-hd"><span>CPU</span><value>23%</value></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:23%;background:var(--success)"></div></div>
+            </div>
+            <div class="gauge-row">
+              <div class="gauge-hd"><span>Memory</span><value>61%</value></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:61%;background:var(--warning)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<div class="watermark"><strong>Mockup v3 — Ocher dark</strong> · hover sidebar · theme toggle in sidebar</div>
+
+<script>
+  // Clock
+  function tick() {
+    const now = new Date();
+    const t = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    document.getElementById('clock').textContent = t;
+    document.getElementById('panel-time').textContent =
+      'Last updated: ' + now.toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:true });
+    document.getElementById('sysTime').textContent = t;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Theme toggle (in sidebar)
+  const html  = document.documentElement;
+  const btn   = document.getElementById('themeToggle');
+  const sun   = document.getElementById('icon-sun');
+  const moon  = document.getElementById('icon-moon');
+  const label = document.getElementById('themeLabel');
+
+  btn.addEventListener('click', () => {
+    const isDark = html.classList.toggle('dark');
+    sun.style.display  = isDark ? ''     : 'none';
+    moon.style.display = isDark ? 'none' : '';
+    label.textContent  = isDark ? 'Light Mode' : 'Dark Mode';
+  });
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

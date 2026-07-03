@@ -1,0 +1,110 @@
+{
+	"config": [
+		{
+			"server": "127.0.0.1",
+			"port": "1433",
+			"databases": [
+				{
+					"name": "JindalDBContext",
+					"pollrates": [
+						{
+							"rate": 300000,
+							"tables": [
+								{
+									"table_name": "Pipes",
+									"packets": [
+										{
+											"devID": "WELLSAWRPEDS_A1",
+											"columns": [
+												"PipeId",
+												"M1_F_ID_Min",
+												"M1_F_ID_Max",
+												"M1_F_ID_Avg",
+												"M1_F_ID_OOR",
+												"M1_F_ID_LOR",
+												"M1_F_ID_Peaking",
+												"M1_F_OD_Min",
+												"M1_F_OD_Max",
+												"M1_F_OD_Avg",
+												"M1_F_OD_OOR",
+												"M1_F_OD_LOR",
+												"M1_F_OD_Peaking"
+											],
+											"tags": [
+												{
+													"tagName": "D11",
+													"datatype": "int",
+													"resolution": 3
+												},
+												{
+													"tagName": "D8",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D6",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D9",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D6",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D11",
+													"datatype": "int",
+													"resolution": 3
+												},
+												{
+													"tagName": "D8",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D6",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D9",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D6",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D11",
+													"datatype": "int",
+													"resolution": 3
+												},
+												{
+													"tagName": "D8",
+													"datatype": "float",
+													"resolution": 3
+												},
+												{
+													"tagName": "D6",
+													"datatype": "float",
+													"resolution": 3
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

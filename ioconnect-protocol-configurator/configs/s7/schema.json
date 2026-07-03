@@ -1,0 +1,168 @@
+{
+  "profile": "s7",
+  "label": "S7",
+  "pollingEntryServerField": "protocol.server",
+  "pollingEntryPortField": "protocol.port",
+  "pollingEntryRackField": "protocol.rack",
+  "pollingEntrySlotField": "protocol.slot",
+
+  "polling": {
+    "sectionLabel": "S7 PLCs",
+    "entryLabel": "S7 PLC",
+    "sections": [
+      {
+        "key": "protocol",
+        "label": "Protocol",
+        "fields": [
+          { "key": "protocol.type",   "label": "type",   "widget": "select", "default": "s7",  "options": ["s7"],                           "disableWhen": null },
+          { "key": "protocol.server", "label": "server", "widget": "text",   "default": "",                                                 "disableWhen": null },
+          { "key": "protocol.port",   "label": "port",   "widget": "number", "default": 102,                                                "disableWhen": null },
+          { "key": "protocol.rack",   "label": "rack",   "widget": "number", "default": 0,                                                  "disableWhen": null },
+          { "key": "protocol.slot",   "label": "slot",   "widget": "number", "default": 1,                                                  "disableWhen": null }
+        ]
+      },
+      {
+        "key": "__root__",
+        "label": "Connection Settings",
+        "fields": [
+          { "key": "connectionType",    "label": "connectionType",    "widget": "select", "default": "persist", "options": ["persist", "nonpersist"], "disableWhen": null },
+          { "key": "connectRetryCount", "label": "connectRetryCount", "widget": "number", "default": 3,                                               "disableWhen": null },
+          { "key": "connectRetryTime",  "label": "connectRetryTime",  "widget": "number", "default": 1000,                                            "disableWhen": null },
+          { "key": "pollRetryCount",    "label": "pollRetryCount",    "widget": "number", "default": 3,                                               "disableWhen": null }
+        ]
+      }
+    ],
+    "summary": {
+      "titleTemplate": "S7 PLC #{index}",
+      "subtitleField": "protocol.server",
+      "badges": [
+        { "label": "Port", "field": "protocol.port",  "colorRules": [{ "value": "*", "color": "muted" }] },
+        { "label": "Rack", "field": "protocol.rack",  "colorRules": [{ "value": "*", "color": "muted" }] },
+        { "label": "Slot", "field": "protocol.slot",  "colorRules": [{ "value": "*", "color": "muted" }] },
+        { "label": "Conn", "field": "connectionType", "colorRules": [{ "value": "*", "color": "primary" }] }
+      ]
+    }
+  },
+
+  "posting": {
+    "types": [
+      {
+        "type": "redpanda",
+        "label": "Redpanda",
+        "pinToIndex0": true,
+        "sections": [
+          {
+            "key": "__root__",
+            "label": "Redpanda / Kafka Settings",
+            "fields": [
+              { "key": "bootstrap_servers", "label": "bootstrap_servers", "widget": "text",    "default": "localhost:9092", "disableWhen": null },
+              { "key": "security_protocol", "label": "security_protocol", "widget": "select",  "default": "PLAINTEXT",     "options": ["PLAINTEXT", "SASL_PLAINTEXT", "SASL_SSL"], "disableWhen": null },
+              { "key": "sasl_mechanism",    "label": "sasl_mechanism",    "widget": "select",  "default": "PLAIN",         "options": ["PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"],  "disableWhen": { "field": "security_protocol", "op": "eq", "value": "PLAINTEXT" } },
+              { "key": "sasl_username",     "label": "sasl_username",     "widget": "text",    "default": "",              "disableWhen": { "field": "security_protocol", "op": "eq", "value": "PLAINTEXT" } },
+              { "key": "sasl_password",     "label": "sasl_password",     "widget": "text",    "default": "",              "disableWhen": { "field": "security_protocol", "op": "eq", "value": "PLAINTEXT" } },
+              { "key": "client_id",         "label": "client_id",         "widget": "text",    "default": "s7-protocol",   "disableWhen": null },
+              { "key": "acks",              "label": "acks",              "widget": "select",  "default": "all",           "options": ["0", "1", "all"], "disableWhen": null },
+              { "key": "compression_type",  "label": "compression_type",  "widget": "select",  "default": "lz4",           "options": ["none", "gzip", "snappy", "lz4", "zstd"], "disableWhen": null },
+              { "key": "localbackup",       "label": "localbackup",       "widget": "boolean", "default": false,           "disableWhen": null },
+              { "key": "backupfile",        "label": "backupfile",        "widget": "text",    "default": "",              "disableWhen": null },
+              { "key": "blocking",          "label": "blocking",          "widget": "boolean", "default": false,           "disableWhen": null },
+              { "key": "stringPosting",     "label": "stringPosting",     "widget": "boolean", "default": true,            "disableWhen": null }
+            ]
+          }
+        ],
+        "summary": {
+          "titleTemplate": "REDPANDA #{index}",
+          "subtitleField": "bootstrap_servers",
+          "badges": [
+            { "label": "Security",  "field": "security_protocol", "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "SASL",      "field": "sasl_mechanism",    "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Compress",  "field": "compression_type",  "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Backup",    "field": "localbackup",       "booleanLabels": { "true": "Yes", "false": "No" }, "colorRules": [{ "value": "true", "color": "success" }, { "value": "*", "color": "muted" }] }
+          ]
+        }
+      },
+      {
+        "type": "mqtt",
+        "label": "MQTT",
+        "pinToIndex0": false,
+        "sections": [
+          {
+            "key": "__root__",
+            "label": "MQTT Settings",
+            "fields": [
+              { "key": "host",          "label": "host",          "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "port",          "label": "port",          "widget": "number",  "default": 1883,  "disableWhen": null },
+              { "key": "username",      "label": "username",      "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "password",      "label": "password",      "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "qos",           "label": "qos",           "widget": "number",  "default": 0,     "disableWhen": null },
+              { "key": "keepalive",     "label": "keepalive",     "widget": "number",  "default": 60,    "disableWhen": null },
+              { "key": "clientId",      "label": "clientId",      "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "localbackup",   "label": "localbackup",   "widget": "boolean", "default": false, "disableWhen": null },
+              { "key": "backupfile",    "label": "backupfile",    "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "blocking",      "label": "blocking",      "widget": "boolean", "default": false, "disableWhen": null },
+              { "key": "stringPosting", "label": "stringPosting", "widget": "boolean", "default": true,  "disableWhen": null }
+            ]
+          }
+        ],
+        "summary": {
+          "titleTemplate": "MQTT #{index}",
+          "subtitleField": "host",
+          "subtitleSuffix": "port",
+          "badges": [
+            { "label": "QoS",       "field": "qos",         "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Keepalive", "field": "keepalive",   "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Backup",    "field": "localbackup", "booleanLabels": { "true": "Yes", "false": "No" }, "colorRules": [{ "value": "true", "color": "success" }, { "value": "*", "color": "muted" }] }
+          ]
+        }
+      },
+      {
+        "type": "http",
+        "label": "HTTP",
+        "pinToIndex0": false,
+        "sections": [
+          {
+            "key": "__root__",
+            "label": "HTTP Settings",
+            "fields": [
+              { "key": "host",          "label": "host",          "widget": "text",    "default": "http://localhost", "disableWhen": null },
+              { "key": "port",          "label": "port",          "widget": "number",  "default": 8001,              "disableWhen": null },
+              { "key": "method",        "label": "method",        "widget": "text",    "default": "POST",            "disableWhen": null },
+              { "key": "timeout",       "label": "timeout",       "widget": "number",  "default": 1000,              "disableWhen": null },
+              { "key": "path",          "label": "path",          "widget": "text",    "default": "/",               "disableWhen": null },
+              { "key": "localbackup",   "label": "localbackup",   "widget": "boolean", "default": false,             "disableWhen": null },
+              { "key": "backupfile",    "label": "backupfile",    "widget": "text",    "default": "",                "disableWhen": null },
+              { "key": "blocking",      "label": "blocking",      "widget": "boolean", "default": false,             "disableWhen": null },
+              { "key": "stringPosting", "label": "stringPosting", "widget": "boolean", "default": true,              "disableWhen": null }
+            ]
+          }
+        ],
+        "summary": {
+          "titleTemplate": "HTTP #{index}",
+          "subtitleField": "host",
+          "subtitleSuffix": "port",
+          "badges": [
+            { "label": "Method", "field": "method",      "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Path",   "field": "path",        "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Backup", "field": "localbackup", "booleanLabels": { "true": "Yes", "false": "No" }, "colorRules": [{ "value": "true", "color": "success" }, { "value": "*", "color": "muted" }] }
+          ]
+        }
+      }
+    ]
+  },
+
+  "csv": {
+    "columns": [
+      { "key": "device",        "label": "Device ID",      "widget": "text",          "width": null,    "monospace": false, "visibleWhen": null, "unsHidden": true },
+      { "key": "address",       "label": "Adresses",       "widget": "text",          "width": "80px",  "monospace": false, "visibleWhen": null, "includeInOnboard": true },
+      { "key": "tag",           "label": "Sensor ID",      "widget": "text",          "width": null,    "monospace": false, "visibleWhen": null, "unsHidden": true },
+      { "key": "resolution",    "label": "Resolution",     "widget": "text",          "width": "90px",  "monospace": false, "visibleWhen": null },
+      { "key": "datatype",      "label": "Data Type",      "widget": "select",        "options": ["sint", "float", "uint", "bit"], "width": "90px",  "monospace": false, "visibleWhen": null },
+      { "key": "server",        "label": "S7 Server",      "widget": "server-select", "width": null,    "monospace": false, "visibleWhen": null, "includeInOnboard": true },
+      { "key": "port",          "label": "Port",           "widget": "port-select",   "width": "80px",  "monospace": false, "visibleWhen": null, "includeInOnboard": true },
+      { "key": "rack",          "label": "Rack",           "widget": "rack-select",   "width": "70px",  "monospace": false, "visibleWhen": null, "includeInOnboard": true },
+      { "key": "slot",          "label": "Slot",           "widget": "slot-select",   "width": "70px",  "monospace": false, "visibleWhen": null, "includeInOnboard": true },
+      { "key": "lograte",       "label": "Poll Rate (ms)", "widget": "text",          "width": "105px", "monospace": false, "visibleWhen": null },
+      { "key": "auto_onboarded","label": "Onboarded",      "widget": "text",          "width": "100px", "monospace": false, "visibleWhen": null, "readOnly": true, "default": "false", "unsOnly": true }
+    ]
+  }
+}

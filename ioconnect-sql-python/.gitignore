@@ -1,0 +1,6 @@
+/myenv/
+/*.csv
+/SQL_config.json
+/history.json
+/sys_parameters.json
+/__pycache__/

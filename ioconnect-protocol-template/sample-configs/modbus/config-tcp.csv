@@ -1,0 +1,17 @@
+# Modbus TCP example — copied from protocol-modbus-serial/sample-configs/config-tcp.csv
+# Columns: device, slave, address, len, tag, datatype, byteorder, fcode, resolution, server, port, lograte
+#
+# slave     = Modbus unit/slave ID (1–247)
+# address   = starting register address (decimal integer)
+# len       = number of registers to read (1=16-bit, 2=32-bit, 4=64-bit)
+# datatype  = int | uint | ulong | float | double | string | bool
+# byteorder = ABCD (big-endian) | CDAB | BADC | DCBA
+# fcode     = Modbus function code: 1=coils, 2=discrete inputs, 3=holding regs, 4=input regs
+# resolution= decimal places to keep
+# server    = PLC/device IP address — must match protocol.server in sys_parameters.json
+# port      = Modbus TCP port (typically 502)
+#
+# Tags with contiguous addresses + same fcode + same slave are batched into one read request by csvparser.py
+device,slave,address,len,tag,datatype,byteorder,fcode,resolution,server,port,lograte
+WELLSAWUTL_SW,1,165,1,D0,int,ABCD,4,3,10.14.62.51,502,10000
+WELLSAWUTL_SW,1,166,2,D1,ulong,CDAB,4,3,10.14.62.51,502,10000

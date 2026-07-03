@@ -1,0 +1,16 @@
+# SQL adapter tag map — merged with sys_parameters.json by csvparser.py
+# Columns: device,server,port,database,table,column,tag,datatype,resolution,lograte
+#   device     = device identifier (becomes payload "device" and the Kafka topic)
+#   server/port/database = MUST match a polling[] entry's protocol.{server,port,database}
+#   table      = source table name
+#   column     = source column name
+#   tag        = output tag name; the special tag "ts" marks the timestamp column
+#                used for incremental reads (exactly one "ts" row per device+table)
+#   datatype   = int | float | str | datetime | bool   (blank = accept as-is)
+#   resolution = decimal places (informational)
+#   lograte    = poll interval in milliseconds
+device,server,port,database,table,column,tag,datatype,resolution,lograte
+WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,reading_ts,ts,datetime,0,5000
+WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,pipe_id,D11,int,0,5000
+WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,flow_min,D8,float,3,5000
+WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,flow_max,D6,float,3,5000

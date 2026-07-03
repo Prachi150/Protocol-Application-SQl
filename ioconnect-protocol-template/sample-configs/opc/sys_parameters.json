@@ -1,0 +1,63 @@
+{
+  "_comment": "OPC UA example — copied from protocol-opcua/sample-configs/sys_parameters.json",
+  "polling": [{
+    "protocol": {
+      "type" : "opcua",
+      "server" : "",
+      "auth" : "none | protected",
+      "encryption" : "none | Basic256Sha256 | Basic256 | Basic128Rsa15",
+      "client_cert" : "/home/wall-e/opcua-test/uaexpert.der",
+      "client_key" : "/home/wall-e/opcua-test/uaexpert_key.pem",
+      "server_cert" : "",
+      "app_uri" : "",
+      "username" : "Administrator",
+      "password" : " ",
+      "timestamp" : "self | server",
+      "server_ts_diff_allowed" : 86400000,
+      "session_timeout" : 3600000,
+      "secure_channel_timeout" : 3600000,
+      "force_datatype" : false
+    },
+    "interpoll_delay": 10,
+    "connect_retry_count": 3,
+    "poll_retry_count": 3,
+    "connect_retry_time": 5000,
+    "connection_type": "persist | nonpersist",
+    "poll_timeout" : 1000,
+    "connection_timeout" : 5000
+  }],
+
+  "posting": [
+    {
+      "_comment": "Option 1: MQTT broker",
+      "type": "mqtt",
+      "host": "hap.faclon.com",
+      "port": 1883,
+      "username": "fapr22",
+      "password": "applepie",
+      "qos": 0,
+      "keepalive": 60,
+      "clientId": "",
+      "localbackup": false,
+      "backupfile" : "",
+      "blocking" : false,
+      "stringPosting": true
+    },
+    {
+      "_comment": "Option 2: HTTP endpoint",
+      "type": "http",
+      "host": "http://localhost",
+      "port": 8001,
+      "method": "POST",
+      "timeout" : 1000,
+      "path": "/",
+      "localbackup": false,
+      "backupfile" : "",
+      "stringPosting": true,
+      "blocking" : false,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  ]
+}

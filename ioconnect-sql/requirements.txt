@@ -1,0 +1,40 @@
+# ==============================================================================
+# requirements.txt — Python dependencies for the ioconnect-sql adapter
+#
+# [SECTION: SHARED DEPENDENCIES — do not remove]
+# These packages are used by all IoConnect protocol adapters:
+#   data posting (paho-mqtt, requests, confluent-kafka),
+#   local SQLite offline buffering (aiosqlite, aiofiles),
+#   Prometheus metrics (prometheus_client),
+#   SSL/TLS (cryptography, pyOpenSSL), and HTTP utilities.
+# ==============================================================================
+aiofiles==24.1.0
+aiosqlite==0.20.0
+certifi==2024.8.30
+cffi==1.17.1
+charset-normalizer==3.3.2
+cryptography==43.0.1
+idna==3.9
+lxml==6.0.0
+paho-mqtt==2.1.0
+pycparser==2.22
+pyOpenSSL==24.2.1
+python-dateutil==2.9.0.post0
+pytz==2024.2
+requests==2.32.3
+six==1.16.0
+sortedcontainers==2.4.0
+typing_extensions==4.12.2
+urllib3==2.2.3
+prometheus_client==0.21.1
+confluent-kafka==2.14.0
+
+# ==============================================================================
+# [SECTION: PROTOCOL-SPECIFIC DEPENDENCY] — SQL (MySQL / MSSQL) via ODBC
+#
+# pyodbc drives both MySQL (MySQL ODBC Unicode Driver) and MSSQL
+# (ODBC Driver 18 for SQL Server). Pre-built wheels and the ODBC driver
+# packages are vendored in ../ioconnect-sql-python/{packages,odbc-drivers}
+# for offline installation on air-gapped IoConnect devices.
+# ==============================================================================
+pyodbc==5.2.0

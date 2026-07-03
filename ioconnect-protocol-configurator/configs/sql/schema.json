@@ -1,0 +1,171 @@
+{
+  "profile": "sql",
+  "label": "SQL",
+  "pollingEntryServerField": "protocol.server",
+
+  "polling": {
+    "sectionLabel": "SQL Connections",
+    "entryLabel": "SQL Connection",
+    "sections": [
+      {
+        "key": "protocol",
+        "label": "Database",
+        "fields": [
+          { "key": "protocol.type",                  "label": "type",                  "widget": "select", "default": "mysql", "options": ["mysql", "mssql"], "disableWhen": null },
+          { "key": "protocol.server",                "label": "server",                "widget": "text",   "default": "",       "disableWhen": null },
+          { "key": "protocol.port",                  "label": "port",                  "widget": "number", "default": 3306,     "disableWhen": null },
+          { "key": "protocol.database",              "label": "database",              "widget": "text",   "default": "",       "disableWhen": null },
+          { "key": "protocol.username",              "label": "username",              "widget": "text",   "default": "",       "disableWhen": null },
+          { "key": "protocol.password",              "label": "password",              "widget": "text",   "default": "",       "disableWhen": null },
+          { "key": "protocol.driver",                "label": "driver",                "widget": "text",   "default": "MySQL ODBC 9.4 Unicode Driver", "disableWhen": null },
+          { "key": "protocol.rowlimit",              "label": "rowlimit",              "widget": "number", "default": 100,      "disableWhen": null },
+          { "key": "protocol.offline_poll_count",    "label": "offline_poll_count",    "widget": "number", "default": 2,        "disableWhen": null },
+          { "key": "protocol.default_last_read_time","label": "default_last_read_time","widget": "number", "default": 1704067200000, "disableWhen": null },
+          { "key": "protocol.tz_offset_minutes",     "label": "tz_offset_minutes",     "widget": "number", "default": 330,      "disableWhen": null }
+        ]
+      },
+      {
+        "key": "__root__",
+        "label": "Connection Settings",
+        "fields": [
+          { "key": "interpoll_delay",     "label": "interpoll_delay",     "widget": "number", "default": 10,        "disableWhen": null },
+          { "key": "connect_retry_count", "label": "connect_retry_count", "widget": "number", "default": 3,         "disableWhen": null },
+          { "key": "poll_retry_count",    "label": "poll_retry_count",    "widget": "number", "default": 3,         "disableWhen": null },
+          { "key": "connect_retry_time",  "label": "connect_retry_time",  "widget": "number", "default": 5000,      "disableWhen": null },
+          { "key": "connection_type",     "label": "connection_type",     "widget": "select", "default": "persist", "options": ["persist", "nonpersist"], "disableWhen": null },
+          { "key": "poll_timeout",        "label": "poll_timeout",        "widget": "number", "default": 1000,      "disableWhen": null },
+          { "key": "connection_timeout",  "label": "connection_timeout",  "widget": "number", "default": 5000,      "disableWhen": null }
+        ]
+      }
+    ],
+    "summary": {
+      "titleTemplate": "SQL Connection #{index}",
+      "subtitleField": "protocol.server",
+      "badges": [
+        { "label": "Type",       "field": "protocol.type",       "colorRules": [{ "value": "*", "color": "primary" }] },
+        { "label": "Database",   "field": "protocol.database",   "colorRules": [{ "value": "*", "color": "muted" }] },
+        { "label": "Connection", "field": "connection_type",     "colorRules": [{ "value": "*", "color": "muted" }] }
+      ]
+    }
+  },
+
+  "posting": {
+    "types": [
+      {
+        "type": "redpanda",
+        "label": "Redpanda",
+        "pinToIndex0": true,
+        "sections": [
+          {
+            "key": "__root__",
+            "label": "Redpanda / Kafka Settings",
+            "fields": [
+              { "key": "bootstrap_servers", "label": "bootstrap_servers", "widget": "text",    "default": "localhost:9092", "disableWhen": null },
+              { "key": "security_protocol", "label": "security_protocol", "widget": "select",  "default": "PLAINTEXT",     "options": ["PLAINTEXT", "SASL_PLAINTEXT", "SASL_SSL"], "disableWhen": null },
+              { "key": "sasl_mechanism",    "label": "sasl_mechanism",    "widget": "select",  "default": "PLAIN",         "options": ["PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"],  "disableWhen": { "field": "security_protocol", "op": "eq", "value": "PLAINTEXT" } },
+              { "key": "sasl_username",     "label": "sasl_username",     "widget": "text",    "default": "",              "disableWhen": { "field": "security_protocol", "op": "eq", "value": "PLAINTEXT" } },
+              { "key": "sasl_password",     "label": "sasl_password",     "widget": "text",    "default": "",              "disableWhen": { "field": "security_protocol", "op": "eq", "value": "PLAINTEXT" } },
+              { "key": "client_id",         "label": "client_id",         "widget": "text",    "default": "ioconnect-sql", "disableWhen": null },
+              { "key": "acks",              "label": "acks",              "widget": "select",  "default": "all",           "options": ["0", "1", "all"], "disableWhen": null },
+              { "key": "compression_type",  "label": "compression_type",  "widget": "select",  "default": "lz4",           "options": ["none", "gzip", "snappy", "lz4", "zstd"], "disableWhen": null },
+              { "key": "localbackup",       "label": "localbackup",       "widget": "boolean", "default": false,           "disableWhen": null },
+              { "key": "backupfile",        "label": "backupfile",        "widget": "text",    "default": "",              "disableWhen": null },
+              { "key": "blocking",          "label": "blocking",          "widget": "boolean", "default": false,           "disableWhen": null },
+              { "key": "stringPosting",     "label": "stringPosting",     "widget": "boolean", "default": true,            "disableWhen": null }
+            ]
+          }
+        ],
+        "summary": {
+          "titleTemplate": "REDPANDA #{index}",
+          "subtitleField": "bootstrap_servers",
+          "badges": [
+            { "label": "Security", "field": "security_protocol", "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Compress", "field": "compression_type",  "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Backup",   "field": "localbackup",       "booleanLabels": { "true": "Yes", "false": "No" }, "colorRules": [{ "value": "true", "color": "success" }, { "value": "*", "color": "muted" }] }
+          ]
+        }
+      },
+      {
+        "type": "http",
+        "label": "HTTP",
+        "pinToIndex0": false,
+        "sections": [
+          {
+            "key": "__root__",
+            "label": "HTTP Settings",
+            "fields": [
+              { "key": "host",          "label": "host",          "widget": "text",    "default": "http://localhost", "disableWhen": null },
+              { "key": "port",          "label": "port",          "widget": "number",  "default": 8001,              "disableWhen": null },
+              { "key": "method",        "label": "method",        "widget": "text",    "default": "POST",            "disableWhen": null },
+              { "key": "timeout",       "label": "timeout",       "widget": "number",  "default": 1000,              "disableWhen": null },
+              { "key": "path",          "label": "path",          "widget": "text",    "default": "/",               "disableWhen": null },
+              { "key": "localbackup",   "label": "localbackup",   "widget": "boolean", "default": false,             "disableWhen": null },
+              { "key": "backupfile",    "label": "backupfile",    "widget": "text",    "default": "",                "disableWhen": null },
+              { "key": "blocking",      "label": "blocking",      "widget": "boolean", "default": false,             "disableWhen": null },
+              { "key": "stringPosting", "label": "stringPosting", "widget": "boolean", "default": true,              "disableWhen": null }
+            ]
+          }
+        ],
+        "summary": {
+          "titleTemplate": "HTTP #{index}",
+          "subtitleField": "host",
+          "subtitleSuffix": "port",
+          "badges": [
+            { "label": "Method", "field": "method",      "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Path",   "field": "path",        "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Backup", "field": "localbackup", "booleanLabels": { "true": "Yes", "false": "No" }, "colorRules": [{ "value": "true", "color": "success" }, { "value": "*", "color": "muted" }] }
+          ]
+        }
+      },
+      {
+        "type": "mqtt",
+        "label": "MQTT",
+        "pinToIndex0": false,
+        "sections": [
+          {
+            "key": "__root__",
+            "label": "MQTT Settings",
+            "fields": [
+              { "key": "host",          "label": "host",          "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "port",          "label": "port",          "widget": "number",  "default": 1883,  "disableWhen": null },
+              { "key": "username",      "label": "username",      "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "password",      "label": "password",      "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "qos",           "label": "qos",           "widget": "number",  "default": 0,     "disableWhen": null },
+              { "key": "keepalive",     "label": "keepalive",     "widget": "number",  "default": 60,    "disableWhen": null },
+              { "key": "clientId",      "label": "clientId",      "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "localbackup",   "label": "localbackup",   "widget": "boolean", "default": false, "disableWhen": null },
+              { "key": "backupfile",    "label": "backupfile",    "widget": "text",    "default": "",    "disableWhen": null },
+              { "key": "blocking",      "label": "blocking",      "widget": "boolean", "default": false, "disableWhen": null },
+              { "key": "stringPosting", "label": "stringPosting", "widget": "boolean", "default": true,  "disableWhen": null }
+            ]
+          }
+        ],
+        "summary": {
+          "titleTemplate": "MQTT #{index}",
+          "subtitleField": "host",
+          "subtitleSuffix": "port",
+          "badges": [
+            { "label": "QoS",       "field": "qos",         "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Keepalive", "field": "keepalive",   "colorRules": [{ "value": "*", "color": "muted" }] },
+            { "label": "Backup",    "field": "localbackup", "booleanLabels": { "true": "Yes", "false": "No" }, "colorRules": [{ "value": "true", "color": "success" }, { "value": "*", "color": "muted" }] }
+          ]
+        }
+      }
+    ]
+  },
+
+  "csv": {
+    "columns": [
+      { "key": "device",     "label": "Device ID",      "widget": "text",          "width": null,    "monospace": false, "visibleWhen": null },
+      { "key": "server",     "label": "SQL Server",     "widget": "server-select", "width": null,    "monospace": false, "visibleWhen": null },
+      { "key": "port",       "label": "Port",           "widget": "text",          "width": "80px",  "monospace": false, "visibleWhen": null },
+      { "key": "database",   "label": "Database",       "widget": "text",          "width": null,    "monospace": false, "visibleWhen": null },
+      { "key": "table",      "label": "Table",          "widget": "text",          "width": null,    "monospace": false, "visibleWhen": null },
+      { "key": "column",     "label": "Column",         "widget": "text",          "width": null,    "monospace": true,  "visibleWhen": null },
+      { "key": "tag",        "label": "Tag",            "widget": "text",          "width": null,    "monospace": false, "visibleWhen": null },
+      { "key": "datatype",   "label": "Data Type",      "widget": "text",          "width": "100px", "monospace": false, "visibleWhen": null },
+      { "key": "resolution", "label": "Resolution",     "widget": "text",          "width": "95px",  "monospace": false, "visibleWhen": null },
+      { "key": "lograte",    "label": "Poll Rate (ms)", "widget": "text",          "width": "110px", "monospace": false, "visibleWhen": null }
+    ]
+  }
+}

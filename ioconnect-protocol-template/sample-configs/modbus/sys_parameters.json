@@ -1,0 +1,70 @@
+{
+  "_comment": "Modbus TCP/Serial example — copied from protocol-modbus-serial/sample-configs/sys_parameters.json",
+  "polling": [
+    {
+      "protocol": {
+        "type": "modbus-tcp | modbus-serial",
+        "server": "FILL_ME_IN",
+        "port": "FILL_ME_IN"
+      },
+      "interpoll_delay": 10,
+      "connect_retry_count": 3,
+      "poll_retry_count": 3,
+      "connect_retry_time": 5000,
+      "connection_type": "persist | nonpersist",
+      "poll_timeout": 1000,
+      "connection_timeout": 5000,
+      "write_timeout": 2000
+    }
+  ],
+
+  "command_server": {
+    "_comment": "Enable only if write commands are required. type = http | mqtt",
+    "enabled": false,
+    "type": "http",
+    "port": 8080,
+    "path": "/write",
+    "topic": "commands/in",
+    "response_topic": "commands/out",
+    "qos": 1,
+    "host": "localhost",
+    "target_port": 1883,
+    "username": "",
+    "password": "",
+    "clientId": "ModbusWriter"
+  },
+
+  "posting": [
+    {
+      "_comment": "Option 1: MQTT broker",
+      "type": "mqtt",
+      "host": "hap.faclon.com",
+      "port": 1883,
+      "username": "fapr22",
+      "password": "applepie",
+      "qos": 0,
+      "keepalive": 60,
+      "clientId": "",
+      "localbackup": false,
+      "backupfile" : "",
+      "blocking" : false,
+      "stringPosting": true
+    },
+    {
+      "_comment": "Option 2: HTTP endpoint",
+      "type": "http",
+      "host": "http://localhost",
+      "port": 8001,
+      "method": "POST",
+      "timeout" : 1000,
+      "path": "/",
+      "localbackup": false,
+      "backupfile" : "",
+      "stringPosting": true,
+      "blocking" : false,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  ]
+}

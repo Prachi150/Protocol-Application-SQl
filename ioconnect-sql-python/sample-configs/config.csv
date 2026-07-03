@@ -1,0 +1,14 @@
+device,database,table,column,tag,resolution,datatype,server,port,lograte
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,PipeId,D11,3,int,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_ID_Min,D8,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_ID_Max,D6,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_ID_Avg,D9,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_ID_OOR,D6,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_ID_LOR,D11,3,int,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_ID_Peaking,D8,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_OD_Min,D6,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_OD_Max,D9,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_OD_Avg,D6,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_OD_OOR,D11,3,int,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_OD_LOR,D8,3,float,"172.25.80.60",102,5000
+WELLSAWRPEDS_A1,JindalDBContext,Pipes,M1_F_OD_Peaking,D6,3,float,"172.25.80.60",102,5000

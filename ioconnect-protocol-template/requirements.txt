@@ -1,0 +1,53 @@
+# ==============================================================================
+# requirements.txt — Python dependencies for the protocol adapter
+#
+# [SECTION: SHARED DEPENDENCIES — do not remove]
+# These packages are used by all IoConnect protocol adapters.
+# They provide: data posting (paho-mqtt, requests, confluent-kafka),
+#               local SQLite offline buffering (aiosqlite, aiofiles),
+#               Prometheus metrics (prometheus_client),
+#               SSL/TLS (cryptography, pyOpenSSL), and HTTP utilities.
+#
+# Versions here are sourced from protocol-opcua (the most recently maintained
+# adapter). When bumping versions, update all adapter repos consistently.
+# ==============================================================================
+aiofiles==24.1.0
+aiosqlite==0.20.0
+certifi==2024.8.30
+cffi==1.17.1
+charset-normalizer==3.3.2
+cryptography==43.0.1
+idna==3.9
+lxml==6.0.0
+paho-mqtt==2.1.0
+pycparser==2.22
+pyOpenSSL==24.2.1
+python-dateutil==2.9.0.post0
+pytz==2024.2
+requests==2.32.3
+six==1.16.0
+sortedcontainers==2.4.0
+typing_extensions==4.12.2
+urllib3==2.2.3
+prometheus_client==0.21.1
+confluent-kafka==2.14.0
+
+# ==============================================================================
+# [SECTION: PROTOCOL-SPECIFIC DEPENDENCY]
+# REPLACE: Add the Python library for your industrial protocol below.
+#
+# Examples used by existing adapters:
+#   opcua==0.98.13           — OPC UA (protocol-opcua)
+#   pymodbus==3.9.2          — Modbus TCP/Serial (protocol-modbus-serial)
+#   pyserial==3.5            — Modbus Serial companion (protocol-modbus-serial)
+#   python-snap7==1.3        — Siemens S7 via snap7 C library (ioconnect-s7-python)
+#
+# Other industrial protocols (not yet implemented):
+#   pycomm3==1.2.5           — Allen-Bradley EtherNet/IP
+#   pyads==3.4.0             — Beckhoff ADS/TwinCAT
+#   cpppo==4.3.0             — ENIP/CIP
+#
+# After adding the library here, bundle its pre-built .whl file(s) into the
+# packages/ directory for offline installation on air-gapped IoConnect devices.
+# ==============================================================================
+# REPLACE: your-protocol-library==x.y.z

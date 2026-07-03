@@ -1,0 +1,69 @@
+{
+  "iot": {
+    "maxPayloadSize": "1mb",
+    "rateLimitPerDevice": 100,
+    "requiredFields": [
+      "deviceId",
+      "timestamp",
+      "data"
+    ],
+    "supportedDeviceTypes": [
+      "sensor",
+      "actuator",
+      "gateway"
+    ],
+    "dataRetentionDays": 30,
+    "security": {
+      "apiKeys": [],
+      "apiKeyDetails": {},
+      "rateLimit": {
+        "windowMs": 60000,
+        "max": 60
+      },
+      "maxPayloadSize": "50kb"
+    },
+    "forwarding": {
+      "method": "mqtt",
+      "retry": {
+        "maxAttempts": 3,
+        "initialDelay": 1000,
+        "maxDelay": 30000,
+        "backoffFactor": 2,
+        "persistFailures": false
+      },
+      "batch": {
+        "enabled": false,
+        "size": 100,
+        "flushInterval": 5000,
+        "maxWaitTime": 30000,
+        "retryIndividually": false
+      },
+      "mqtt": {
+        "enabled": false,
+        "broker": "mqtt://localhost:1883",
+        "topic": "iot/data",
+        "payloadTemplate": "{\"device\":\"${deviceId}\",\"type\":\"${deviceType}\",\"data\":${JSON.stringify(data)},\"timestamp\":\"${timestamp}\"}",
+        "qos": 1,
+        "clientId": "iot-gateway-3b565107614c3"
+      },
+      "http": {
+        "enabled": false,
+        "endpoint": "http://localhost:8080/data",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "payloadTemplate": "{\"deviceData\":{\"id\":\"${deviceId}\",\"type\":\"${deviceType}\"},\"measurements\":${JSON.stringify(data)},\"timestamp\":\"${timestamp}\"}"
+      }
+    }
+  },
+  "jwt": {
+    "secret": null,
+    "expiresIn": "24h"
+  },
+  "github": {
+    "token": null
+  },
+  "vpn": null,
+  "onboarding": null
+}

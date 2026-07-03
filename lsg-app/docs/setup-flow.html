@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LSG-App — First-Time Setup Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 32px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #e6edf3;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #8b949e;
+    margin-bottom: 32px;
+  }
+  .lane-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .lanes {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .lane {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .lane-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8b949e;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+
+  /* Node styles */
+  .node {
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .node .file {
+    font-size: 10px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: #8b949e;
+    margin-top: 4px;
+    display: block;
+  }
+  .node .fn {
+    font-size: 10px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: #58a6ff;
+    margin-top: 2px;
+    display: block;
+  }
+  .node-start   { background: #1f6feb22; border: 1px solid #1f6feb; color: #79c0ff; font-weight: 600; text-align: center; border-radius: 20px; }
+  .node-action  { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; }
+  .node-check   { background: #27272a; border: 1px solid #6e7681; color: #e6edf3; transform: rotate(0deg); border-radius: 0; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); padding: 14px 18px; text-align: center; margin: 10px auto; width: fit-content; min-width: 140px; }
+  .node-secret  { background: #3d1f6322; border: 1px solid #8957e5; color: #d2a8ff; }
+  .node-file    { background: #0a3622; border: 1px solid #238636; color: #3fb950; }
+  .node-system  { background: #161b22; border: 1px solid #6e7681; color: #8b949e; }
+  .node-ui      { background: #1c2b3a; border: 1px solid #388bfd; color: #79c0ff; }
+  .node-success { background: #0a3622; border: 1px solid #238636; color: #3fb950; font-weight: 600; text-align: center; border-radius: 20px; }
+  .node-error   { background: #3a0a0a; border: 1px solid #f85149; color: #ff7b72; border-radius: 6px; }
+  .node-warn    { background: #2b1f0a; border: 1px solid #d29922; color: #e3b341; }
+
+  /* Connectors */
+  .arrow {
+    text-align: center;
+    color: #484f58;
+    font-size: 16px;
+    margin: 2px 0;
+  }
+  .arrow-label {
+    font-size: 10px;
+    color: #8b949e;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .branch {
+    display: grid;
+    gap: 12px;
+    margin: 8px 0;
+  }
+  .branch-2 { grid-template-columns: 1fr 1fr; }
+  .branch-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .yes  { color: #3fb950; }
+  .no   { color: #f85149; }
+
+  /* Cross-lane arrows */
+  .cross-arrow {
+    background: #161b22;
+    border: 1px dashed #30363d;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #6e7681;
+    margin: 12px 0;
+    text-align: center;
+  }
+  .cross-arrow span { color: #388bfd; font-family: monospace; }
+
+  /* Full-width section */
+  .full-section {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .full-section .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e6edf3;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .badge-shell  { background: #1f3d1f; color: #3fb950; border: 1px solid #238636; }
+  .badge-node   { background: #1c2b3a; color: #79c0ff; border: 1px solid #388bfd; }
+  .badge-react  { background: #1c2030; color: #d2a8ff; border: 1px solid #8957e5; }
+  .badge-boot   { background: #2b2010; color: #e3b341; border: 1px solid #d29922; }
+
+  .flow-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .flow-item {
+    flex: 1;
+    min-width: 140px;
+  }
+  .flow-connector {
+    display: flex;
+    align-items: center;
+    padding-top: 20px;
+    color: #484f58;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Step numbers */
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #21262d;
+    border: 1px solid #30363d;
+    font-size: 10px;
+    font-weight: 700;
+    color: #8b949e;
+    margin-right: 6px;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+
+  hr.section-sep {
+    border: none;
+    border-top: 1px solid #21262d;
+    margin: 20px 0;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #8b949e;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<h1>LSG-App — First-Time Setup Flow</h1>
+<p class="subtitle">End-to-end: install.sh → systemd boot → frontend routing → browser wizard → service restart</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#238636;border:1px solid #3fb950"></div> File / output written</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8957e5;border:1px solid #d2a8ff"></div> Secret / crypto operation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#388bfd;border:1px solid #79c0ff"></div> UI / frontend action</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6e7681;border:1px solid #8b949e"></div> System / OS action</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d29922;border:1px solid #e3b341"></div> Decision / branch</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PHASE 1 — install.sh                                       -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="full-section">
+  <div class="section-title">
+    <span class="badge badge-shell">Phase 1</span>
+    install.sh — Run as root on the device
+    <span style="font-size:11px;color:#8b949e;font-weight:400;margin-left:8px;">scripts/install.sh</span>
+  </div>
+
+  <div class="flow-row">
+
+    <div class="flow-item">
+      <div class="node node-start">sudo bash scripts/install.sh<br><small style="font-weight:400;font-size:10px;">[--defer-setup] flag optional</small></div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        <span class="step-num">1</span>Preflight checks
+        <span class="file">scripts/install.sh : L99–116</span>
+        <span class="fn">node, nginx, client/build present?</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        <span class="step-num">2</span>Install age tool
+        <span class="file">scripts/install.sh : L122–142</span>
+        <span class="fn">apt/dnf/brew or direct download</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-file">
+        <span class="step-num">3</span>Create /etc/lsg-app/
+        <span class="file">scripts/install.sh : L151–152</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-file">
+        <span class="step-num">4</span>Write /etc/lsg-app/config.env
+        <span class="file">scripts/install.sh : L157–222</span>
+        <span class="fn">PORT, MQTT defaults, retry config…<br>chmod 644 (readable by all)</span>
+      </div>
+    </div>
+
+    <div class="flow-connector">→</div>
+
+    <div class="flow-item">
+      <div class="node node-secret">
+        <span class="step-num">5</span>Generate age keypair
+        <span class="file">scripts/install.sh : L227–241</span>
+        <span class="fn">age-keygen → age-identity (400)<br>→ age-identity.pub (444)</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-secret">
+        <span class="step-num">6</span>Generate machine secrets
+        <span class="file">scripts/install.sh : L257–258</span>
+        <span class="fn">openssl rand -hex 32<br>JWT_SECRET, INTERNAL_API_KEY</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-warn" style="text-align:center;">
+        <strong>--defer-setup flag?</strong>
+        <span class="file">scripts/install.sh : L266</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="branch branch-2">
+        <div>
+          <div class="branch-label no">NO — Interactive</div>
+          <div class="node node-action" style="font-size:11px;">
+            Prompt for secrets<br>
+            <span class="file">L269–353</span>
+            <span class="fn">Admin user + password (read -s)<br>IoAdmin MQTT creds<br>Protocol MQTT (optional)<br>GitHub token<br>API keys (optional)</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="node node-secret" style="font-size:11px;">
+            bcrypt hash password
+            <span class="file">L301–304</span>
+            <span class="fn">node -e bcryptjs.hash(..., 12)<br>unset plaintext immediately</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="node node-file" style="font-size:11px;">
+            Write full secrets<br>SETUP_COMPLETE=<strong>true</strong>
+            <span class="file">L374–392</span>
+          </div>
+        </div>
+        <div>
+          <div class="branch-label yes">YES — Defer</div>
+          <div class="node node-system" style="font-size:11px;">
+            Skip all prompts
+            <span class="file">L266–267</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="node node-file" style="font-size:11px;">
+            Write minimal secrets<br>SETUP_COMPLETE=<strong>false</strong>
+            <span class="file">L364–373</span>
+            <span class="fn">Only JWT_SECRET +<br>INTERNAL_API_KEY</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-connector">→</div>
+
+    <div class="flow-item">
+      <div class="node node-secret">
+        <span class="step-num">7</span>Encrypt secrets → .age file
+        <span class="file">scripts/install.sh : L396</span>
+        <span class="fn">age -R age-identity.pub<br>-o /etc/lsg-app/secrets.env.age<br>tmpfile</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        Shred temp file
+        <span class="file">scripts/install.sh : L399–403</span>
+        <span class="fn">shred -u tmpfile (or rm -f)</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        <span class="step-num">8</span>Configure Nginx
+        <span class="file">scripts/install.sh : L419–484</span>
+        <span class="fn">/etc/nginx/sites-available/lsg-app<br>static → client/build<br>/api/ → proxy 127.0.0.1:3001<br>include lsg-app-locations.d/*.conf</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        <span class="step-num">9</span>Create systemd unit
+        <span class="file">scripts/install.sh : L492–548</span>
+        <span class="fn">ExecStartPre: age decrypt → /run/lsg-app/secrets.env<br>ExecStart: node src/index.js<br>ExecStopPost: shred secrets<br>EnvironmentFile: secrets + config.env</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        <span class="step-num">10</span>Write sudoers entry
+        <span class="file">scripts/install.sh : L554–562</span>
+        <span class="fn">APP_USER NOPASSWD:<br>systemctl restart lsg-app</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        <span class="step-num">11</span>systemctl enable + start
+        <span class="file">scripts/install.sh : L605–607</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PHASE 2 — systemd boot                                     -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="full-section">
+  <div class="section-title">
+    <span class="badge badge-boot">Phase 2</span>
+    systemd Boot — Every time the service starts
+    <span style="font-size:11px;color:#8b949e;font-weight:400;margin-left:8px;">/etc/systemd/system/lsg-app.service</span>
+  </div>
+
+  <div class="flow-row">
+    <div class="flow-item">
+      <div class="node node-system">
+        ExecStartPre (1 of 2)
+        <span class="fn">age -d -i /etc/lsg-app/age-identity<br>-o /run/lsg-app/secrets.env<br>/etc/lsg-app/secrets.env.age</span>
+        <span class="file">systemd unit : ExecStartPre line</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-system">
+        ExecStartPre (2 of 2)
+        <span class="fn">chmod 600 /run/lsg-app/secrets.env<br>(tmpfs — lives in RAM only)</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-action">
+        ExecStart
+        <span class="fn">node src/index.js</span>
+        <span class="file">src/index.js</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-action">
+        Load EnvironmentFiles
+        <span class="fn">/run/lsg-app/secrets.env<br>/etc/lsg-app/config.env<br>/etc/environment</span>
+        <span class="file">src/config/index.js</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-warn" style="font-size:11px;">
+        <strong>SETUP_COMPLETE === 'true' ?</strong>
+        <span class="fn">process.env.SETUP_COMPLETE</span>
+        <span class="file">src/middleware/setupGuard.js : L21</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="branch branch-2">
+        <div>
+          <div class="branch-label yes">TRUE</div>
+          <div class="node node-success" style="font-size:11px;">All /api/* routes open<br>setupGuard passes next()</div>
+        </div>
+        <div>
+          <div class="branch-label no">FALSE</div>
+          <div class="node node-error" style="font-size:11px;">
+            All routes → 503
+            <span class="file">setupGuard.js : L32</span>
+            <span class="fn">except /api/setup/* + /api/health</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PHASE 3 — Frontend routing                                 -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="full-section">
+  <div class="section-title">
+    <span class="badge badge-react">Phase 3</span>
+    React Frontend — Browser visits the device IP
+    <span style="font-size:11px;color:#8b949e;font-weight:400;margin-left:8px;">client/src/App.js</span>
+  </div>
+
+  <div class="flow-row">
+    <div class="flow-item">
+      <div class="node node-ui">
+        User opens http://&lt;device-ip&gt;
+        <span class="file">client/src/App.js : AppRoutes</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-ui">
+        useEffect on mount
+        <span class="fn">fetch('/api/setup/status')</span>
+        <span class="file">client/src/App.js : L47–58</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-action">
+        GET /api/setup/status
+        <span class="fn">setupService.isConfigured()</span>
+        <span class="file">src/routes/setup.routes.js : L33<br>src/services/setupService.js : L37</span>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="node node-warn" style="font-size:11px;">
+        <strong>{ configured: bool }</strong>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+    <div class="flow-item">
+      <div class="branch branch-2">
+        <div>
+          <div class="branch-label yes">true</div>
+          <div class="node node-success" style="font-size:11px;">Normal routes<br>→ /login or /overview</div>
+        </div>
+        <div>
+          <div class="branch-label no">false</div>
+          <div class="node node-ui" style="font-size:11px;">
+            All routes → /setup
+            <span class="file">App.js : L76–80</span>
+            <span class="fn">&lt;Setup /&gt; component</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PHASE 4 — Browser wizard (defer-setup path only)          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="full-section">
+  <div class="section-title">
+    <span class="badge badge-react">Phase 4</span>
+    Browser Setup Wizard — defer-setup path only
+    <span style="font-size:11px;color:#8b949e;font-weight:400;margin-left:8px;">client/src/components/Setup.js + src/routes/setup.routes.js + src/services/setupService.js</span>
+  </div>
+
+  <div class="lanes">
+
+    <!-- UI col -->
+    <div class="lane">
+      <div class="lane-title">React UI — Setup.js</div>
+
+      <div class="node node-ui">
+        Step 0: Admin Account
+        <span class="fn">adminUsername, adminPassword,<br>confirmPassword</span>
+        <span class="file">Setup.js : L314–374</span>
+      </div>
+      <div class="arrow">↓ Next (stepValid)</div>
+      <div class="node node-ui">
+        Step 1: IoAdmin MQTT
+        <span class="fn">masterMqttUsername,<br>masterMqttPassword</span>
+        <span class="file">Setup.js : L376–408</span>
+      </div>
+      <div class="arrow">↓ Next</div>
+      <div class="node node-ui">
+        Step 2: Protocol MQTT
+        <span class="fn">mqttUsername, mqttPassword<br>(optional — both or neither)</span>
+        <span class="file">Setup.js : L410–451</span>
+      </div>
+      <div class="arrow">↓ Next</div>
+      <div class="node node-ui">
+        Step 3: GitHub Token + API Keys
+        <span class="fn">githubToken (required, >10 chars)<br>apiKeys (optional CSV)</span>
+        <span class="file">Setup.js : L453–503</span>
+      </div>
+      <div class="arrow">↓ allValid check</div>
+      <div class="node node-ui">
+        handleSubmit()
+        <span class="fn">POST /api/setup/complete</span>
+        <span class="file">Setup.js : L220–247</span>
+      </div>
+      <div class="arrow">↓ on success</div>
+      <div class="node node-ui">
+        setRestarting(true)
+        <span class="fn">Show RestartingOverlay</span>
+        <span class="file">Setup.js : L115–143</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-ui">
+        pollUntilConfigured()
+        <span class="fn">GET /api/setup/status every 2s<br>until { configured: true }</span>
+        <span class="file">Setup.js : L175–187</span>
+      </div>
+      <div class="arrow">↓ configured === true</div>
+      <div class="node node-success">navigate('/login')</div>
+    </div>
+
+    <!-- Route col -->
+    <div class="lane">
+      <div class="lane-title">Express Route — setup.routes.js</div>
+
+      <div class="node node-action">
+        POST /api/setup/complete
+        <span class="file">setup.routes.js : L38</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-warn" style="font-size:11px;text-align:center;">
+        <strong>isConfigured()?</strong>
+        <span class="file">setup.routes.js : L41</span>
+      </div>
+      <div class="arrow">↓ no</div>
+      <div class="node node-action">
+        Server-side validation
+        <span class="fn">password === confirmPassword<br>password.length >= 8</span>
+        <span class="file">setup.routes.js : L62–77</span>
+      </div>
+      <div class="arrow">↓ valid</div>
+      <div class="node node-action">
+        await setupService.writeSecrets(fields)
+        <span class="file">setup.routes.js : L79–88</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-success">
+        res.json({ success: true })
+        <span class="file">setup.routes.js : L91–94</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        setupService.restartService()
+        <span class="fn">setTimeout 1500ms then<br>sudo systemctl restart lsg-app</span>
+        <span class="file">setup.routes.js : L97<br>setupService.js : L132–140</span>
+      </div>
+    </div>
+
+    <!-- Service col -->
+    <div class="lane">
+      <div class="lane-title">Service Logic — setupService.js</div>
+
+      <div class="node node-action">
+        writeSecrets(fields)
+        <span class="file">setupService.js : L55</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        Validate required fields
+        <span class="fn">adminUsername, adminPassword,<br>githubToken, masterMqtt*</span>
+        <span class="file">setupService.js : L56–61</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-secret">
+        bcrypt.hash(password, 12)
+        <span class="file">setupService.js : L64</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        Read JWT_SECRET + INTERNAL_API_KEY
+        <span class="fn">from process.env<br>(preserved from install.sh)</span>
+        <span class="file">setupService.js : L67–68</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-file">
+        Build secrets.env content
+        <span class="fn">SETUP_COMPLETE=true<br>ADMIN_USERNAME<br>ADMIN_PASSWORD_HASH<br>MASTER_MQTT_* , GITHUB_TOKEN<br>optional: MQTT_*, API_KEYS</span>
+        <span class="file">setupService.js : L75–96</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-secret">
+        Write to temp file
+        <span class="fn">os.tmpdir()/lsg-secrets-*.env<br>mode 0o600</span>
+        <span class="file">setupService.js : L100–101</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-secret">
+        age encrypt
+        <span class="fn">age -R age-identity.pub<br>-o /etc/lsg-app/secrets.env.age<br>tmpfile</span>
+        <span class="file">setupService.js : L110–114</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        shred -u tmpfile
+        <span class="fn">(fallback: fs.unlinkSync)</span>
+        <span class="file">setupService.js : L117–121</span>
+      </div>
+    </div>
+
+    <!-- Restart col -->
+    <div class="lane">
+      <div class="lane-title">After Restart — systemd re-runs Phase 2</div>
+
+      <div class="node node-system">
+        sudo systemctl restart lsg-app
+        <span class="fn">(allowed via sudoers — no password)</span>
+        <span class="file">setupService.js : L134</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-system">
+        ExecStartPre: age decrypt
+        <span class="fn">secrets.env now contains<br>SETUP_COMPLETE=true</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        node src/index.js
+        <span class="fn">process.env.SETUP_COMPLETE === 'true'</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        setupGuard: next() for all routes
+        <span class="file">src/middleware/setupGuard.js : L21</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-action">
+        GET /api/setup/status
+        <span class="fn">→ { configured: true }</span>
+        <span class="file">setup.routes.js : L33</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-success">
+        Frontend poll detects configured<br>navigate('/login', replace)
+        <span class="file">Setup.js : L178–182</span>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="node node-success">Device fully operational</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key files reference -->
+<div class="full-section" style="margin-top:20px;">
+  <div class="section-title">Key Files Reference</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:12px;">
+    <div>
+      <div style="color:#8b949e;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">Shell</div>
+      <div class="node node-file" style="font-size:11px;">scripts/install.sh<br><span style="color:#8b949e;">Full installer — all 13 steps</span></div>
+    </div>
+    <div>
+      <div style="color:#8b949e;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">Backend</div>
+      <div class="node node-action" style="font-size:11px;margin-bottom:6px;">src/services/setupService.js<br><span style="color:#8b949e;">isConfigured, writeSecrets, restartService</span></div>
+      <div class="node node-action" style="font-size:11px;margin-bottom:6px;">src/routes/setup.routes.js<br><span style="color:#8b949e;">GET /status, POST /complete</span></div>
+      <div class="node node-action" style="font-size:11px;">src/middleware/setupGuard.js<br><span style="color:#8b949e;">Blocks all routes until SETUP_COMPLETE=true</span></div>
+    </div>
+    <div>
+      <div style="color:#8b949e;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">Frontend</div>
+      <div class="node node-ui" style="font-size:11px;margin-bottom:6px;">client/src/App.js : AppRoutes<br><span style="color:#8b949e;">Checks /api/setup/status on mount; redirects to /setup</span></div>
+      <div class="node node-ui" style="font-size:11px;">client/src/components/Setup.js<br><span style="color:#8b949e;">4-step wizard, polling, RestartingOverlay</span></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

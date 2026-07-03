@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OPC-UA Configurator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:        #2272c3;
+      --primary-dim:    rgba(34,114,195,0.06);
+      --primary-100:    #dbeafe;
+      --primary-200:    #bfdbfe;
+      --primary-700:    #1d4ed8;
+
+      --accent:         #2ca48a;
+      --accent-100:     #ccfbf1;
+      --accent-200:     #99f6e4;
+
+      --destructive:    #dc2626;
+      --destructive-50: #fef2f2;
+      --destructive-100:#fecaca;
+
+      --warn-50:  #fffbeb;
+      --warn-200: #fde68a;
+      --warn-600: #d97706;
+      --warn-800: #92400e;
+
+      --ok-100:   #dcfce7;
+      --ok-200:   #bbf7d0;
+      --ok-800:   #166534;
+
+      --bg:          #f4f7fb;
+      --card:        #ffffff;
+      --muted:       #eaeef5;
+      --border:      #d4dce8;
+      --border-strong: #b8c4d6;
+
+      --fg:          #0d1829;
+      --fg-2:        #3d5166;
+      --fg-muted:    #6b7f96;
+      --fg-subtle:   #9aacbf;
+
+      --shadow-card:       0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+
+      --r-sm:   5px;
+      --r-md:   8px;
+      --r-lg:   10px;
+      --r-pill: 999px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ─── HEADER ─────────────────────────────── */
+    .header {
+      flex-shrink: 0;
+      border-top: 3px solid var(--primary);
+      background: linear-gradient(180deg, #fff 0%, #f7fafd 100%);
+      border-bottom: 1px solid var(--border);
+      height: 50px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .logo-icon {
+      width: 30px; height: 30px;
+      border-radius: var(--r-md);
+      background: linear-gradient(135deg, var(--primary-100) 0%, #c7dcf7 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 3px rgba(34,114,195,0.18);
+      flex-shrink: 0;
+    }
+    .logo-icon svg { width: 15px; height: 15px; }
+
+    .logo-text {
+      font-size: 14px; font-weight: 700;
+      letter-spacing: -0.022em;
+      color: var(--fg);
+    }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px 3px 7px;
+      border-radius: var(--r-pill);
+      font-size: 11px; font-weight: 600;
+      background: var(--ok-100); color: var(--ok-800);
+      border: 1px solid var(--ok-200);
+    }
+
+    .pulse-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #16a34a;
+      position: relative; flex-shrink: 0;
+    }
+    .pulse-dot::after {
+      content: '';
+      position: absolute; inset: -3px;
+      border-radius: 50%;
+      background: rgba(22,163,74,0.28);
+      animation: ripple 2.2s ease-out infinite;
+    }
+    @keyframes ripple {
+      0%   { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(2.0); opacity: 0; }
+    }
+
+    .spacer { flex: 1; }
+
+    .vline { width: 1px; height: 18px; background: var(--border); }
+
+    .hbtn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px;
+      border-radius: var(--r-sm);
+      font-size: 12px; font-weight: 500;
+      border: 1px solid var(--border);
+      background: #fff; color: var(--fg-2);
+      cursor: pointer; font-family: var(--font);
+      transition: background 0.13s, border-color 0.13s, color 0.13s;
+      letter-spacing: -0.01em;
+    }
+    .hbtn svg { width: 13px; height: 13px; }
+    .hbtn:hover { background: var(--muted); border-color: var(--border-strong); color: var(--fg); }
+    .hbtn-stop { color: var(--destructive); border-color: var(--destructive-100); background: transparent; }
+    .hbtn-stop:hover { background: var(--destructive-50); }
+
+    /* ─── TABS ───────────────────────────────── */
+    .tabs {
+      flex-shrink: 0;
+      display: flex;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+    }
+
+    .tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 14px;
+      font-size: 13px; font-weight: 500;
+      color: var(--fg-muted);
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer; user-select: none;
+      transition: color 0.13s, border-color 0.13s;
+      letter-spacing: -0.01em;
+    }
+    .tab svg { width: 14px; height: 14px; opacity: 0.65; transition: opacity 0.13s; }
+    .tab:hover { color: var(--fg-2); }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+    .tab.active svg { opacity: 1; }
+
+    /* ─── CONTENT ────────────────────────────── */
+    .content { flex: 1; overflow: auto; }
+    .pane { display: none; }
+    .pane.active { display: block; }
+    .pane-col { display: none; flex-direction: column; height: 100%; }
+    .pane-col.active { display: flex; }
+
+    /* ─── TOOLBAR ────────────────────────────── */
+    .toolbar {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 16px;
+      background: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tbtn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px;
+      border-radius: var(--r-sm);
+      font-size: 12px; font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--card); color: var(--fg-2);
+      cursor: pointer; font-family: var(--font);
+      transition: background 0.13s, border-color 0.13s, color 0.13s;
+      letter-spacing: -0.01em; white-space: nowrap;
+    }
+    .tbtn svg { width: 12px; height: 12px; }
+    .tbtn:hover { background: #f0f3f8; border-color: var(--border-strong); color: var(--fg); }
+    .tbtn-primary { background: var(--primary); color: #fff; border-color: transparent; }
+    .tbtn-primary:hover { background: #1a5fa8; }
+    .tbtn-danger { color: var(--destructive); border-color: var(--destructive-100); }
+    .tbtn-danger:hover { background: var(--destructive-50); }
+    .tbtn[disabled] { opacity: 0.35; pointer-events: none; }
+
+    .save-pulse { animation: sglow 2s ease-in-out infinite; }
+    @keyframes sglow {
+      0%,100% { box-shadow: 0 0 0 0   rgba(34,114,195,0.4); }
+      50%      { box-shadow: 0 0 0 4px rgba(34,114,195,0);   }
+    }
+
+    /* ─── SECTION HEADER ────────────────────── */
+    .wrap { padding: 20px 18px; max-width: 940px; }
+
+    .sec-hdr {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .sec-bar {
+      width: 3px; height: 14px; border-radius: 2px;
+      background: var(--primary); flex-shrink: 0;
+    }
+    .sec-bar.t { background: var(--accent); }
+    .sec-label {
+      font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.085em;
+      color: var(--fg-muted); white-space: nowrap;
+    }
+    .sec-rule { flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── SERVER CARDS ───────────────────────── */
+    .card-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+
+    .scard {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.18s;
+    }
+    .scard:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-1.5px);
+      border-color: var(--border-strong);
+    }
+
+    .rail { width: 4px; flex-shrink: 0; background: var(--primary); }
+    .rail.t { background: var(--accent); }
+
+    .card-body {
+      flex: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; padding: 13px 15px;
+    }
+
+    .card-lhs {
+      display: flex; align-items: flex-start; gap: 12px;
+      flex: 1; min-width: 0;
+    }
+
+    .icon-box {
+      width: 34px; height: 34px;
+      border-radius: var(--r-md);
+      background: linear-gradient(135deg, var(--primary-100), #c7dcf7);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+      flex-shrink: 0;
+    }
+    .icon-box.t { background: linear-gradient(135deg, var(--accent-100), #a7f3d0); color: var(--accent); }
+    .icon-box svg { width: 16px; height: 16px; }
+
+    .card-info { flex: 1; min-width: 0; }
+
+    .card-title-row {
+      display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    }
+    .card-name {
+      font-size: 13px; font-weight: 600;
+      color: var(--fg); letter-spacing: -0.015em;
+    }
+    .tag-badge {
+      padding: 1px 7px;
+      border-radius: var(--r-pill);
+      font-size: 10px; font-weight: 600;
+      background: var(--primary-dim);
+      color: var(--primary);
+      border: 1px solid var(--primary-200);
+    }
+    .card-url {
+      font-family: var(--mono);
+      font-size: 11px; color: var(--fg-muted);
+      margin-top: 2px; letter-spacing: -0.02em;
+    }
+    .card-meta {
+      display: flex; flex-wrap: wrap;
+      gap: 4px 13px; margin-top: 8px;
+    }
+    .meta-item {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: var(--fg-muted);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 1px 6px;
+      border-radius: var(--r-pill);
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .b-gray   { background: var(--muted);         color: var(--fg-muted); }
+    .b-blue   { background: var(--primary-100);   color: var(--primary-700); }
+    .b-green  { background: var(--ok-100);         color: var(--ok-800); }
+    .b-orange { background: #fed7aa;               color: #9a3412; }
+    .b-teal   { background: var(--accent-100);     color: var(--accent); border: 1px solid var(--accent-200); }
+
+    .card-actions {
+      display: flex; gap: 6px;
+      flex-shrink: 0; align-self: center;
+    }
+    .abtn {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 9px;
+      border-radius: var(--r-sm);
+      font-size: 11.5px; font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--card); color: var(--fg-2);
+      cursor: pointer; font-family: var(--font);
+      transition: all 0.13s; letter-spacing: -0.01em;
+    }
+    .abtn svg { width: 11px; height: 11px; }
+    .abtn:hover { background: var(--muted); }
+    .abtn-del { color: var(--destructive); border-color: var(--destructive-100); background: transparent; }
+    .abtn-del:hover { background: var(--destructive-50); }
+    .abtn[disabled] { opacity: 0.32; pointer-events: none; }
+
+    /* ─── ADD BUTTON ──────────────────────────── */
+    .add-btn {
+      width: 100%; padding: 10px;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r-lg);
+      font-size: 12px; font-weight: 500;
+      color: var(--fg-muted); background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: all 0.16s ease;
+      font-family: var(--font); letter-spacing: -0.01em;
+      margin-bottom: 24px;
+    }
+    .add-btn svg { width: 13px; height: 13px; }
+    .add-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(34,114,195,0.03); }
+
+    /* ─── UNSAVED BANNER ─────────────────────── */
+    .banner {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      background: var(--warn-50);
+      border-bottom: 1px solid var(--warn-200);
+      font-size: 12px; font-weight: 500;
+      color: var(--warn-800);
+    }
+    .banner svg { width: 14px; height: 14px; color: var(--warn-600); flex-shrink: 0; }
+
+    /* ─── TABLE ──────────────────────────────── */
+    .tscroll { flex: 1; overflow: auto; }
+
+    table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+    thead { position: sticky; top: 0; z-index: 10; }
+
+    th {
+      background: #e2eaf4;
+      padding: 8px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--fg-muted);
+      border-bottom: 1px solid #c4d1e3;
+      border-right: 1px solid var(--border);
+      white-space: nowrap; text-align: left;
+    }
+    th:first-child { text-align: center; }
+
+    td {
+      height: 32px; padding: 0;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      font-size: 12px; color: var(--fg);
+    }
+
+    tbody tr:nth-child(even) td { background: rgba(34,114,195,0.018); }
+    tbody tr:hover td { background: rgba(34,114,195,0.045) !important; }
+    tbody tr.selected td { background: rgba(34,114,195,0.065) !important; }
+
+    .cell {
+      display: block; padding: 0 8px;
+      line-height: 32px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .cell-mono {
+      font-family: var(--mono);
+      font-size: 11.5px; color: var(--fg-2);
+      letter-spacing: -0.02em;
+    }
+    .cell-s1 { color: var(--primary);  font-weight: 500; }
+    .cell-s2 { color: var(--accent);   font-weight: 500; }
+    .row-n {
+      display: block; text-align: center;
+      line-height: 32px; font-size: 10px; color: var(--fg-subtle);
+    }
+    .cc { display: flex; align-items: center; justify-content: center; height: 32px; }
+
+    input[type="checkbox"] { width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer; }
+
+    .tfooter {
+      flex-shrink: 0;
+      display: flex; align-items: center;
+      padding: 6px 16px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--fg-muted);
+      letter-spacing: -0.01em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ════════════════════════════════════════════ -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+        <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+      </svg>
+    </div>
+    <span class="logo-text">OPC-UA Configurator</span>
+  </div>
+
+  <div class="status-pill">
+    <span class="pulse-dot"></span>
+    Running
+  </div>
+
+  <div class="spacer"></div>
+
+  <div style="display:flex;align-items:center;gap:6px;">
+    <button class="hbtn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/>
+      </svg>
+      Restart
+    </button>
+    <div class="vline"></div>
+    <button class="hbtn hbtn-stop">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+      </svg>
+      Stop
+    </button>
+  </div>
+</header>
+
+<!-- ═══ TABS ══════════════════════════════════════════════ -->
+<div class="tabs">
+  <div class="tab active" onclick="show(this,'servers')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+      <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+    </svg>
+    OPC Servers
+  </div>
+  <div class="tab" onclick="show(this,'tags')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+      <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+    </svg>
+    Tags
+  </div>
+</div>
+
+<!-- ═══ CONTENT ═══════════════════════════════════════════ -->
+<div class="content">
+
+  <!-- ── OPC SERVERS ── -->
+  <div id="p-servers" class="pane active">
+    <div class="toolbar">
+      <button class="tbtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Import JSON
+      </button>
+      <button class="tbtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export JSON
+      </button>
+      <div class="spacer"></div>
+      <button class="tbtn tbtn-primary save-pulse">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Save to Device
+      </button>
+    </div>
+
+    <div class="wrap">
+
+      <!-- OPC Servers section -->
+      <div class="sec-hdr">
+        <div class="sec-bar"></div>
+        <span class="sec-label">OPC Servers</span>
+        <div class="sec-rule"></div>
+      </div>
+
+      <div class="card-list">
+
+        <!-- Server 1 -->
+        <div class="scard">
+          <div class="rail"></div>
+          <div class="card-body">
+            <div class="card-lhs">
+              <div class="icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+                  <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+                </svg>
+              </div>
+              <div class="card-info">
+                <div class="card-title-row">
+                  <span class="card-name">OPC Server #1</span>
+                  <span class="tag-badge">14 tags</span>
+                </div>
+                <div class="card-url">opc.tcp://192.168.1.100:4840</div>
+                <div class="card-meta">
+                  <span class="meta-item">Type <span class="badge b-blue" style="margin-left:4px">ua-binary</span></span>
+                  <span class="meta-item">Auth <span class="badge b-gray" style="margin-left:4px">anonymous</span></span>
+                  <span class="meta-item">Poll <span class="badge b-blue" style="margin-left:4px">subscription</span></span>
+                  <span class="meta-item">Connection <span class="badge b-gray" style="margin-left:4px">persist</span></span>
+                  <span class="meta-item">Force Datatype <span class="badge b-gray" style="margin-left:4px">No</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="abtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Edit
+              </button>
+              <button class="abtn abtn-del">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Server 2 -->
+        <div class="scard">
+          <div class="rail"></div>
+          <div class="card-body">
+            <div class="card-lhs">
+              <div class="icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+                  <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+                </svg>
+              </div>
+              <div class="card-info">
+                <div class="card-title-row">
+                  <span class="card-name">OPC Server #2</span>
+                  <span class="tag-badge">32 tags</span>
+                </div>
+                <div class="card-url">opc.tcp://192.168.1.101:4840</div>
+                <div class="card-meta">
+                  <span class="meta-item">Type <span class="badge b-blue" style="margin-left:4px">ua-binary</span></span>
+                  <span class="meta-item">Auth <span class="badge b-orange" style="margin-left:4px">username</span></span>
+                  <span class="meta-item">Poll <span class="badge b-gray" style="margin-left:4px">poll</span></span>
+                  <span class="meta-item">Connection <span class="badge b-gray" style="margin-left:4px">nonpersist</span></span>
+                  <span class="meta-item">Force Datatype <span class="badge b-green" style="margin-left:4px">Yes</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="abtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Edit
+              </button>
+              <button class="abtn abtn-del">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="add-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add OPC Server
+      </button>
+
+      <!-- Posting section -->
+      <div class="sec-hdr">
+        <div class="sec-bar t"></div>
+        <span class="sec-label">Posting</span>
+        <div class="sec-rule"></div>
+      </div>
+
+      <div class="card-list">
+
+        <!-- Redpanda -->
+        <div class="scard">
+          <div class="rail t"></div>
+          <div class="card-body">
+            <div class="card-lhs">
+              <div class="icon-box t">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="card-info">
+                <div class="card-title-row">
+                  <span class="card-name">Redpanda</span>
+                  <span class="badge b-teal">Default</span>
+                </div>
+                <div class="card-url">kafka.internal:9092</div>
+                <div class="card-meta">
+                  <span class="meta-item">Compression <span class="badge b-gray" style="margin-left:4px">lz4</span></span>
+                  <span class="meta-item">Security <span class="badge b-gray" style="margin-left:4px">SASL_PLAINTEXT</span></span>
+                  <span class="meta-item">SASL <span class="badge b-gray" style="margin-left:4px">PLAIN</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="abtn" disabled>Edit</button>
+              <button class="abtn abtn-del" disabled>Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MQTT -->
+        <div class="scard">
+          <div class="rail t"></div>
+          <div class="card-body">
+            <div class="card-lhs">
+              <div class="icon-box t">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.07 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+              <div class="card-info">
+                <div class="card-title-row">
+                  <span class="card-name">MQTT</span>
+                </div>
+                <div class="card-url">mqtt.internal:1883</div>
+                <div class="card-meta">
+                  <span class="meta-item">QoS <span class="badge b-gray" style="margin-left:4px">1</span></span>
+                  <span class="meta-item">Auth <span class="badge b-orange" style="margin-left:4px">username</span></span>
+                  <span class="meta-item">Keepalive <span class="badge b-gray" style="margin-left:4px">60 s</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="abtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Edit
+              </button>
+              <button class="abtn abtn-del">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="add-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Posting Entry
+      </button>
+
+    </div>
+  </div><!-- /p-servers -->
+
+  <!-- ── TAGS ── -->
+  <div id="p-tags" class="pane-col">
+
+    <div class="banner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      You have unsaved changes — save before restarting the service.
+      <div class="spacer"></div>
+      <button class="tbtn tbtn-primary save-pulse" style="font-size:11px;padding:4px 11px;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Save to Device
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <button class="tbtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Import CSV
+      </button>
+      <button class="tbtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export CSV
+      </button>
+      <div class="vline"></div>
+      <button class="tbtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Row
+      </button>
+      <button class="tbtn" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Duplicate
+      </button>
+      <button class="tbtn tbtn-danger" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+        Delete
+      </button>
+      <div class="spacer"></div>
+      <span style="font-size:11px;color:var(--fg-muted);">127 rows · 2 servers</span>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:36px"><div class="cc"><input type="checkbox"></div></th>
+            <th style="width:36px;text-align:center">#</th>
+            <th style="width:130px">Device</th>
+            <th style="width:220px">Address</th>
+            <th style="width:130px">Tag</th>
+            <th style="width:90px">Resolution</th>
+            <th style="width:130px">Server</th>
+            <th style="width:80px">Log Rate</th>
+            <th style="width:70px;text-align:center">Array</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="selected">
+            <td><div class="cc"><input type="checkbox" checked></div></td>
+            <td><span class="row-n">1</span></td>
+            <td><span class="cell">PLC_Main</span></td>
+            <td><span class="cell cell-mono">ns=2;s=Temperature1</span></td>
+            <td><span class="cell">temp_inlet</span></td>
+            <td><span class="cell">1.0</span></td>
+            <td><span class="cell cell-s1">Server_1</span></td>
+            <td><span class="cell">5</span></td>
+            <td><div class="cc"><input type="checkbox"></div></td>
+          </tr>
+          <tr>
+            <td><div class="cc"><input type="checkbox"></div></td>
+            <td><span class="row-n">2</span></td>
+            <td><span class="cell">PLC_Main</span></td>
+            <td><span class="cell cell-mono">ns=2;s=Temperature2</span></td>
+            <td><span class="cell">temp_outlet</span></td>
+            <td><span class="cell">1.0</span></td>
+            <td><span class="cell cell-s1">Server_1</span></td>
+            <td><span class="cell">5</span></td>
+            <td><div class="cc"><input type="checkbox"></div></td>
+          </tr>
+          <tr>
+            <td><div class="cc"><input type="checkbox"></div></td>
+            <td><span class="row-n">3</span></td>
+            <td><span class="cell">PLC_Main</span></td>
+            <td><span class="cell cell-mono">ns=2;s=Pressure_01</span></td>
+            <td><span class="cell">pressure_bar</span></td>
+            <td><span class="cell">0.01</span></td>
+            <td><span class="cell cell-s1">Server_1</span></td>
+            <td><span class="cell">10</span></td>
+            <td><div class="cc"><input type="checkbox"></div></td>
+          </tr>
+          <tr>
+            <td><div class="cc"><input type="checkbox"></div></td>
+            <td><span class="row-n">4</span></td>
+            <td><span class="cell">Remote_IO</span></td>
+            <td><span class="cell cell-mono">ns=3;s=Motor.Speed</span></td>
+            <td><span class="cell">motor_rpm</span></td>
+            <td><span class="cell">1</span></td>
+            <td><span class="cell cell-s2">Server_2</span></td>
+            <td><span class="cell">2</span></td>
+            <td><div class="cc"><input type="checkbox"></div></td>
+          </tr>
+          <tr>
+            <td><div class="cc"><input type="checkbox"></div></td>
+            <td><span class="row-n">5</span></td>
+            <td><span class="cell">Remote_IO</span></td>
+            <td><span class="cell cell-mono">ns=3;s=Motor.Current</span></td>
+            <td><span class="cell">motor_amps</span></td>
+            <td><span class="cell">0.1</span></td>
+            <td><span class="cell cell-s2">Server_2</span></td>
+            <td><span class="cell">2</span></td>
+            <td><div class="cc"><input type="checkbox"></div></td>
+          </tr>
+          <tr>
+            <td><div class="cc"><input type="checkbox"></div></td>
+            <td><span class="row-n">6</span></td>
+            <td><span class="cell">Remote_IO</span></td>
+            <td><span class="cell cell-mono">ns=3;s=Motor.Torque</span></td>
+            <td><span class="cell">motor_torque</span></td>
+            <td><span class="cell">0.01</span></td>
+            <td><span class="cell cell-s2">Server_2</span></td>
+            <td><span class="cell">2</span></td>
+            <td><div class="cc"><input type="checkbox"></div></td>
+          </tr>
+          <tr style="opacity:0.22">
+            <td></td><td><span class="row-n">7</span></td>
+            <td colspan="7" style="padding-left:10px;font-size:11px;color:var(--fg-subtle);line-height:32px">
+              … 120 more rows
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tfooter">
+      <span>6 of 127 rows visible</span>
+      <div class="spacer"></div>
+      <span>1 row selected</span>
+    </div>
+  </div><!-- /p-tags -->
+
+</div><!-- /content -->
+
+<script>
+  function show(el, id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pane, .pane-col').forEach(p => {
+      p.classList.remove('active');
+      p.style.display = 'none';
+    });
+    el.classList.add('active');
+    const pane = document.getElementById('p-' + id);
+    pane.classList.add('active');
+    pane.style.display = pane.classList.contains('pane-col') ? 'flex' : 'block';
+  }
+</script>
+</body>
+</html>

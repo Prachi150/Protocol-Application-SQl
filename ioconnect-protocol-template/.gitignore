@@ -1,0 +1,28 @@
+# NOTE: Identical across all IoConnect protocol adapter apps.
+# Excludes: venv, __pycache__, runtime-generated configs (app_manifest.json, env/),
+#           configurator checkout, logs, and protocol-generated config snapshots.
+
+/myenv/
+/*.csv
+/OPC_config.json
+/sys_parameters.json
+/__pycache__/
+
+/env
+/logs
+/services
+logs/*
+.venv/
+__pycache__/
+.mypy_cache/
+*.pyc
+services/*
+nginx/*
+CLAUDE.md
+OPC_config.json
+test.py
+myenv
+configurator
+.env
+venv
+app_manifest.json

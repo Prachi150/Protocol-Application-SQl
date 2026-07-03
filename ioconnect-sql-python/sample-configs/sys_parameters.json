@@ -1,0 +1,52 @@
+{
+  "polling": {
+    "protocol": "mysql",
+    "interPollDelay": 100,
+    "connectRetryCount": 3,
+    "pollRetryCount": 3,
+    "connectRetryTime": 5000,
+    "connectionType": "reconnect",
+    "mysql" : {
+      "server" : "",
+      "port" : 0,
+      "rowlimit" : 100,
+      "username" : "faclon",
+      "password" : "Faclon$345",
+      "offline_poll_count" : 2,
+      "default_last_read_time" : 1704067200000
+    }
+  },
+
+  "posting": {
+    "type": "http",
+    "mqtt": {
+      "host": "hap.faclon.com",
+      "port": 1883,
+      "username": "fapr22",
+      "password": "applepie",
+      "subTopics": ["devicesOut/APRCO_T1/autocmd"],
+      "qos": 0,
+      "keepalive": 60,
+      "clientId": "",
+      "localbackup": false,
+      "backupfile" : "",
+      "blocking" : false,
+      "stringPosting": true
+    },
+
+    "http": {
+      "host": "http://localhost",
+      "port": 8001,
+      "method": "POST",
+      "timeout" : 1000,
+      "path": "/",
+      "localbackup": false,
+      "backupfile" : "",
+      "stringPosting": true,
+      "blocking" : false,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+}

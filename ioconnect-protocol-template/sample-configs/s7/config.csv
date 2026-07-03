@@ -1,0 +1,26 @@
+# Siemens S7 example — copied from ioconnect-s7-python/sample-configs/config.csv
+# Columns: device, address, offset, len, tag, resolution, datatype, server, port, rack, slot, lograte
+#
+# address   = S7 memory area + sub-address in Siemens notation, e.g.:
+#               DB51,DBW10  = Data Block 51, WORD at byte offset 10 (2 bytes)
+#               DB51,DBD20  = Data Block 51, DWORD at byte offset 20 (4 bytes)
+#               DB51,DBX5.3 = Data Block 51, BIT at byte 5, bit 3
+#               MW71        = Merker (flag) WORD at byte offset 71
+#               I1.0        = Input byte 1, bit 0
+#               Q2.1        = Output byte 2, bit 1
+# offset    = byte offset — extracted automatically from 'address' by csvparser.py
+# len       = data length in bytes (WORD=2, DWORD=4, BIT=1, SINT/BYTE=1)
+# datatype  = sint | uint | float | bit | string
+# server    = PLC IP address — must match protocol.server in sys_parameters.json
+# port      = S7 port (typically 102)
+# rack      = PLC rack number (typically 0)
+# slot      = PLC slot number (typically 1 or 2)
+#
+# Tags at the same memory address (e.g. multiple bits in one byte) are batched
+# into a single read block by csvparser.py
+device,address,offset,len,tag,resolution,datatype,server,port,rack,slot,lograte
+WELLSAW,DB51,10,2,D11,3,sint,"172.25.80.60",102,0,2,5000
+WELLSAW,DB51,20,4,D8,3,float,"172.25.80.60",102,0,2,5000
+WELLSAW,MW71,1,2,D6,3,float,"172.25.80.60",102,0,2,5000
+WELLSAW,DB32,98,4,D9,3,float,"172.25.80.60",102,0,2,5000
+WELLSAW,DB50,18,2,D6,3,float,"172.25.80.60",102,0,2,5000

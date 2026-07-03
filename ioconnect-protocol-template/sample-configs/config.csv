@@ -1,0 +1,68 @@
+# ==============================================================================
+# config.csv — Protocol Adapter Tag Database (TEMPLATE)
+#
+# REPLACE: Define your protocol's CSV column schema here.
+#          Delete all comment lines (lines starting with #) before deploying —
+#          standard CSV parsers do not support comments. These lines are here
+#          only as documentation in the template.
+#
+# PURPOSE:
+#   This file is the tag database. Each row defines one data point (tag) that
+#   the adapter should read from a field device on every poll cycle.
+#   csvparser.py reads this file and merges it with sys_parameters.json to
+#   produce the hierarchical poll config consumed by app.py.
+#
+# REQUIRED COLUMNS (all protocols must include these):
+#   device   — Device identifier string. Must be unique per physical device.
+#              Becomes the "device" field in the posted payload.
+#              Example: PUMP_01, REACTOR_A, WELLSAW_EXP3
+#
+#   server   — Server/host address used to match this tag to a polling[]
+#              entry in sys_parameters.json. Must match exactly.
+#              For Modbus TCP / S7: use the IP address (e.g. 192.168.1.100)
+#              For OPC UA: use the full server URL (e.g. opc.tcp://192.168.1.100:4840)
+#              For Modbus Serial: use the serial port (e.g. /dev/ttyS0)
+#
+#   lograte  — Poll interval in milliseconds. Tags with the same lograte are
+#              grouped into one poll cycle. Use consistent values.
+#              Example: 1000 (1 second), 5000 (5 seconds), 60000 (1 minute)
+#
+# PROTOCOL-SPECIFIC COLUMNS:
+#   Add all other columns your protocol needs. See existing adapters for reference:
+#
+#   OPC UA   (protocol-opcua):
+#     address     — OPC UA node ID (e.g. ns=2;s=Tag1)
+#     tag         — human-readable tag name posted in the payload
+#     datatype    — forced type override: bool, float, string (empty = auto)
+#     byteorder   — endianness: ABCD, CDAB, BADC, DCBA (empty = default)
+#     resolution  — decimal places (0 = integer, 3 = 3 decimal places)
+#     isarray     — true/false: whether the node is an array
+#     arrayindex  — index into array (if isarray=true)
+#
+#   Modbus TCP/Serial (protocol-modbus-serial):
+#     slave       — Modbus slave/unit ID (integer, typically 1–247)
+#     address     — starting register address (decimal integer)
+#     len         — number of registers to read (1=16-bit, 2=32-bit, 4=64-bit)
+#     tag         — human-readable tag name
+#     datatype    — float, int, uint, long, double, string, bool
+#     byteorder   — endianness: ABCD, CDAB, BADC, DCBA
+#     fcode       — Modbus function code: 1=coils, 2=discrete, 3=holding, 4=input
+#     resolution  — decimal places
+#     port        — TCP port (typically 502)
+#
+#   Siemens S7 (ioconnect-s7-python):
+#     address     — S7 memory area + address (e.g. DB51, MW100, I1.3, Q2.0)
+#     offset      — byte offset within the DB or area
+#     len         — data length in bytes
+#     tag         — human-readable tag name
+#     resolution  — decimal places
+#     datatype    — float, sint, uint, bit, string
+#     port        — TCP port (typically 102)
+#     rack        — PLC rack number (typically 0)
+#     slot        — PLC slot number (typically 1 or 2)
+#
+# REPLACE: Replace the header row below and the sample rows with your actual schema.
+# ==============================================================================
+device,server,lograte
+SAMPLE_DEVICE_01,YOUR_SERVER_ADDRESS,5000
+SAMPLE_DEVICE_01,YOUR_SERVER_ADDRESS,1000

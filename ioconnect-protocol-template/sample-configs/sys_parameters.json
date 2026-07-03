@@ -1,0 +1,130 @@
+{
+  "_doc": "sys_parameters.json — Protocol Adapter System Configuration. See docs/ARCHITECTURE.md for the full schema reference.",
+
+  "polling": [
+    {
+      "_comment": "REPLACE: One entry per physical server/PLC/device endpoint. Add more entries for multi-server setups.",
+      "protocol": {
+        "_comment": "REPLACE: Add protocol-specific connection fields inside this block. See examples below.",
+        "type": "myproto",
+        "server": "FILL_ME_IN",
+
+        "_examples": {
+          "_note": "This '_examples' block is for documentation only — remove it before deploying.",
+          "opcua_example": {
+            "type": "opcua",
+            "server": "opc.tcp://192.168.1.100:4840",
+            "auth": "none",
+            "encryption": "none",
+            "username": "",
+            "password": "",
+            "session_timeout": 3600000,
+            "secure_channel_timeout": 3600000,
+            "force_datatype": false
+          },
+          "modbus_tcp_example": {
+            "type": "modbus-tcp",
+            "server": "192.168.1.100",
+            "port": 502
+          },
+          "modbus_serial_example": {
+            "type": "modbus-serial",
+            "server": "/dev/ttyS0",
+            "port": 502,
+            "baudrate": 9600,
+            "parity": "N",
+            "stopbits": 1,
+            "bytesize": 8
+          },
+          "s7_example": {
+            "type": "s7",
+            "server": "192.168.1.100",
+            "port": 102,
+            "rack": 0,
+            "slot": 1
+          }
+        }
+      },
+
+      "_comment_connection_type": "persist = long-lived connection; nonpersist = connect and disconnect for each poll cycle",
+      "connection_type": "persist",
+
+      "connect_retry_count": 3,
+      "_comment_retry_time": "milliseconds between connection retry attempts",
+      "connect_retry_time": 5000,
+
+      "poll_retry_count": 3,
+      "_comment_poll_timeout": "milliseconds before a read() call times out",
+      "poll_timeout": 1000,
+      "connection_timeout": 5000,
+
+      "_comment_interpoll_delay": "optional milliseconds to sleep between polling rate groups within one server thread",
+      "interpoll_delay": 10
+    }
+  ],
+
+  "command_server": {
+    "_comment": "OPTIONAL: Enable this block only if your protocol supports write commands from a remote source.",
+    "_comment2": "When enabled, the post_handler opens an HTTP server (or MQTT subscriber) that accepts write payloads.",
+    "enabled": false,
+    "type": "http",
+    "_comment_type": "http or mqtt",
+    "port": 8080,
+    "path": "/write"
+  },
+
+  "posting": [
+    {
+      "_comment": "CHOOSE ONE posting type and remove the other two blocks. The first entry is used.",
+      "_comment2": "In IoConnect production mode, this entire posting[] is IGNORED — the platform injects REDPANDA_KAFKA_ADDRESS via /etc/environment.",
+      "_comment3": "For --no-ioconnect (standalone) mode, configure one of the three backends below.",
+
+      "_option_1_mqtt": "─── MQTT ─────────────────────────────────────────────────────────────",
+      "type": "mqtt",
+      "host": "hap.faclon.com",
+      "port": 1883,
+      "username": "",
+      "password": "",
+      "qos": 0,
+      "keepalive": 60,
+      "clientId": "",
+      "localbackup": false,
+      "backupfile": "",
+      "blocking": false,
+      "stringPosting": true
+    },
+    {
+      "_option_2_http": "─── HTTP ─────────────────────────────────────────────────────────────",
+      "type": "http",
+      "host": "http://localhost",
+      "port": 8001,
+      "method": "POST",
+      "timeout": 1000,
+      "path": "/",
+      "localbackup": false,
+      "backupfile": "",
+      "stringPosting": true,
+      "blocking": false,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    {
+      "_option_3_redpanda": "─── Redpanda / Kafka ────────────────────────────────────────────────",
+      "_comment": "Use this when running standalone with a local or remote Redpanda broker.",
+      "type": "redpanda",
+      "bootstrap_servers": "localhost:9092",
+      "security_protocol": "PLAINTEXT",
+      "sasl_mechanism": "",
+      "sasl_username": "",
+      "sasl_password": "",
+      "client_id": "my-myproto-app",
+      "acks": "all",
+      "compression_type": "lz4",
+      "backupfile": "",
+      "localbackup": false,
+      "blocking": false,
+      "stringPosting": true
+    }
+  ]
+}

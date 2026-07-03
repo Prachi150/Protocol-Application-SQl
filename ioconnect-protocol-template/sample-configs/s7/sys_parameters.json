@@ -1,0 +1,45 @@
+{
+  "_comment": "Siemens S7 example — copied from ioconnect-s7-python/sample-configs/sys_parameters.json",
+  "polling": [
+    {
+      "protocol": {
+        "type": "s7",
+        "server": "172.25.80.60",
+        "port": 102,
+        "rack": 0,
+        "slot": 1
+      },
+      "connectionType": "persist",
+      "connectRetryCount": 3,
+      "connectRetryTime": 1000,
+      "pollRetryCount": 3
+    }
+  ],
+
+  "posting": [
+    {
+      "_comment": "Option 1: HTTP endpoint (used in S7 example)",
+      "type": "http",
+      "host": "http://localhost",
+      "port": 8001,
+      "method": "POST",
+      "timeout": 1000,
+      "path": "/",
+      "localbackup": false,
+      "backupfile": "",
+      "stringPosting": true,
+      "blocking": false,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  ],
+
+  "command_server": {
+    "_comment": "Write support not yet implemented for S7. Keep enabled=false.",
+    "enabled": false,
+    "type": "http",
+    "port": 8080,
+    "path": "/write"
+  }
+}

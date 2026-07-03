@@ -1,0 +1,23 @@
+{
+    "opcua": {
+        "repo": "https://github.com/Faclon-IoT-Team/protocol-opcua-package",
+        "appName": "ioconnect-opcua",
+        "description": "OPC UA protocol client for data collection"
+    },
+    "node-red": {
+        "repo": "https://github.com/Faclon-IoT-Team/app-nodered-package",
+        "appName": "ioconnect-nodered",
+        "description": "Node-Red app for minor calculations"
+    },
+    "opc-newpackage": {
+        "repo": "https://github.com/Faclon-IoT-Team/ioconnect-opcua-python",
+        "appName": "ioconnect-opcua-newpackage",
+        "description": "Testing new opcua packaging format"
+    },
+    "sql": {
+        "repo": "https://github.com/Faclon-IoT-Team/ioconnect-sql",
+        "appName": "ioconnect-sql",
+        "description": "SQL database (MySQL/MSSQL) polling protocol client"
+    }
+
+}

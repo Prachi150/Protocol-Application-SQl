@@ -1,0 +1,23 @@
+# OPC UA example — copied from protocol-opcua/sample-configs/config.csv
+# Columns: device, address, tag, datatype, byteorder, resolution, server, lograte, isarray, arrayindex
+#
+# address   = OPC UA node ID (e.g. ns=2;s=TagName)
+# datatype  = bool | float | int | string | (empty = auto-detect)
+# byteorder = ABCD | CDAB | BADC | DCBA (endianness; ABCD = big-endian)
+# resolution = decimal places to keep (0 = integer)
+# server    = full OPC UA endpoint URL — must match protocol.server in sys_parameters.json
+# isarray   = yes | no — whether the node is an OPC UA array node
+# arrayindex = integer index into the array node (0 for scalars or first element)
+device,address,tag,datatype,byteorder,resolution,server,lograte,isarray,arrayindex
+WELLSAWEXP3_A1,ns=2;s=Tag10,D0,bool,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag11,D1,float,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag12,D2,bool,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag13,D3,float,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag14,D4,bool,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag15,D5,float,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag16,D6,bool,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag17,D7,float,ABCD,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag18,D8,,,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag19,D9,,,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag20,D10,,,3,opcua://test.faclon.com:6678,5000,no,0
+WELLSAWEXP3_A1,ns=2;s=Tag21,D11,,,3,opcua://test.faclon.com:6678,5000,no,0

@@ -1,0 +1,8 @@
+# Modbus Serial (RTU) example — copied from protocol-modbus-serial/sample-configs/config-serial.csv
+# Columns: device, slave, address, len, tag, datatype, byteorder, fcode, resolution, server, port, lograte
+#
+# Same column schema as config-tcp.csv.
+# For serial mode, 'server' = serial port path (e.g. /dev/ttyS0, /dev/ttyUSB0)
+# and 'port' = baud rate (e.g. 9600, 19200, 115200).
+# Set protocol.type = "modbus-serial" in sys_parameters.json.
+device,slave,address,len,tag,datatype,byteorder,fcode,resolution,server,port,lograte
