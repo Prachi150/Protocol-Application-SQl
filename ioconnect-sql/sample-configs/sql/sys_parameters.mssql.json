@@ -1,0 +1,67 @@
+{
+  "_comment": "MSSQL example. Also shows TWO polling entries (two databases on the same or different servers) — the adapter runs one client/thread per (server,port,database). Verified end-to-end against SQL Server 2022 with 'ODBC Driver 18 for SQL Server'.",
+  "polling": [
+    {
+      "protocol": {
+        "type": "mssql",
+        "server": "127.0.0.1",
+        "port": 1433,
+        "database": "salesdb",
+        "username": "sa",
+        "password": "Str0ng!Passw0rd",
+        "driver": "ODBC Driver 18 for SQL Server",
+        "rowlimit": 100,
+        "offline_poll_count": 2,
+        "default_last_read_time": 1704067200000,
+        "tz_offset_minutes": 330
+      },
+      "connection_type": "persist",
+      "connect_retry_count": 3,
+      "connect_retry_time": 5000,
+      "poll_retry_count": 3,
+      "poll_timeout": 1000,
+      "connection_timeout": 5000,
+      "interpoll_delay": 10
+    },
+    {
+      "protocol": {
+        "type": "mssql",
+        "server": "127.0.0.1",
+        "port": 1433,
+        "database": "inventorydb",
+        "username": "sa",
+        "password": "Str0ng!Passw0rd",
+        "driver": "ODBC Driver 18 for SQL Server",
+        "rowlimit": 100,
+        "offline_poll_count": 2,
+        "default_last_read_time": 1704067200000,
+        "tz_offset_minutes": 330
+      },
+      "connection_type": "persist",
+      "connect_retry_count": 3,
+      "connect_retry_time": 5000,
+      "poll_retry_count": 3,
+      "poll_timeout": 1000,
+      "connection_timeout": 5000,
+      "interpoll_delay": 10
+    }
+  ],
+  "command_server": { "enabled": false, "type": "http", "port": 8080, "path": "/write" },
+  "posting": [
+    {
+      "type": "redpanda",
+      "bootstrap_servers": "localhost:9092",
+      "security_protocol": "PLAINTEXT",
+      "sasl_mechanism": "",
+      "sasl_username": "",
+      "sasl_password": "",
+      "client_id": "ioconnect-sql",
+      "acks": "all",
+      "compression_type": "lz4",
+      "localbackup": false,
+      "backupfile": "",
+      "blocking": false,
+      "stringPosting": true
+    }
+  ]
+}

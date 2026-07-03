@@ -1,0 +1,6 @@
+device,server,port,database,table,column,tag,datatype,resolution,lograte
+ORDER_SYS,127.0.0.1,1433,salesdb,Orders,reading_ts,ts,datetime,0,5000
+ORDER_SYS,127.0.0.1,1433,salesdb,Orders,order_id,ORD,int,0,5000
+ORDER_SYS,127.0.0.1,1433,salesdb,Orders,amount,AMT,float,2,5000
+STOCK_SYS,127.0.0.1,1433,inventorydb,Stock,reading_ts,ts,datetime,0,10000
+STOCK_SYS,127.0.0.1,1433,inventorydb,Stock,sku_count,QTY,int,0,10000
