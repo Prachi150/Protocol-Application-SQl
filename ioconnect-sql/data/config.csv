@@ -2,4 +2,8 @@ device,server,port,database,table,column,tag,datatype,resolution,lograte
 WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,reading_ts,ts,datetime,0,5000
 WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,pipe_id,D11,int,0,5000
 WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,flow_min,D8,float,3,5000
-WELLSAWRPEDS_A1,127.0.0.1,3306,factory,Pipes,flow_max,D6,float,3,5000
+MOTOR_01,127.0.0.1,3306,factory,Motors,reading_ts,ts,datetime,0,5000
+MOTOR_01,127.0.0.1,3306,factory,Motors,rpm,RPM,int,0,5000
+MOTOR_01,127.0.0.1,3306,factory,Motors,temp,TEMP,float,1,5000
+TANK_01,127.0.0.1,3306,plant2,Tanks,reading_ts,ts,datetime,0,5000
+TANK_01,127.0.0.1,3306,plant2,Tanks,level_pct,LVL,float,1,5000

@@ -118,30 +118,11 @@ export default function JSONEditor({ params, setParams, schema }: JSONEditorProp
 
   // ---- File I/O ----
 
-  const openFile = async () => {
-    if ("showOpenFilePicker" in window) {
-      try {
-        const [handle] = await (window as any).showOpenFilePicker({
-          types: [{ description: "JSON Files", accept: { "application/json": [".json"] } }],
-        });
-        jsonFileHandleRef.current = handle;
-        const file = await handle.getFile();
-        const text = await file.text();
-        try {
-          const data = JSON.parse(text);
-          setParams(data);
-          setJsonSaved(true);
-          initialParamsRef.current = JSON.stringify(data);
-          toast.success("JSON loaded");
-        } catch {
-          toast.error("Invalid JSON file");
-        }
-      } catch {
-        // cancelled
-      }
-    } else {
-      fileRef.current?.click();
-    }
+  // Use a plain hidden <input type=file> (handleFile does the parsing). This
+  // works in every context, including the cross-origin iframe the platform
+  // embeds the app in — unlike the File System Access API, which is blocked there.
+  const openFile = () => {
+    fileRef.current?.click();
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,47 +144,18 @@ export default function JSONEditor({ params, setParams, schema }: JSONEditorProp
     e.target.value = "";
   };
 
-  const saveFile = async () => {
+  // Plain browser download — reliable in every context (incl. embedded iframe).
+  const saveFile = () => {
     const json = JSON.stringify(params, null, 2);
-    if (jsonFileHandleRef.current) {
-      try {
-        const writable = await (jsonFileHandleRef.current as any).createWritable();
-        await writable.write(json);
-        await writable.close();
-        setJsonSaved(true);
-        toast.success("JSON saved to file");
-        return;
-      } catch {
-        // fall through
-      }
-    }
-    if ("showSaveFilePicker" in window) {
-      try {
-        const handle = await (window as any).showSaveFilePicker({
-          suggestedName: "sys_parameters.json",
-          types: [{ description: "JSON Files", accept: { "application/json": [".json"] } }],
-        });
-        jsonFileHandleRef.current = handle;
-        const writable = await handle.createWritable();
-        await writable.write(json);
-        await writable.close();
-        setJsonSaved(true);
-        toast.success("JSON saved to file");
-        return;
-      } catch {
-        // cancelled
-      }
-    } else {
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "sys_parameters.json";
-      a.click();
-      URL.revokeObjectURL(url);
-      setJsonSaved(true);
-      toast.success("JSON saved");
-    }
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sys_parameters.json";
+    a.click();
+    URL.revokeObjectURL(url);
+    setJsonSaved(true);
+    toast.success("JSON exported");
   };
 
   const saveToServer = async () => {

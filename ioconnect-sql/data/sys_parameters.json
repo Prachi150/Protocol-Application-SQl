@@ -21,6 +21,28 @@
       "poll_timeout": 1000,
       "connection_timeout": 5000,
       "interpoll_delay": 10
+    },
+    {
+      "protocol": {
+        "type": "mysql",
+        "server": "127.0.0.1",
+        "port": 3306,
+        "database": "plant2",
+        "username": "iosense",
+        "password": "iosense_pw",
+        "driver": "MariaDB Unicode",
+        "rowlimit": 100,
+        "offline_poll_count": 2,
+        "default_last_read_time": 1704067200000,
+        "tz_offset_minutes": 330
+      },
+      "connection_type": "persist",
+      "connect_retry_count": 3,
+      "connect_retry_time": 5000,
+      "poll_retry_count": 3,
+      "poll_timeout": 1000,
+      "connection_timeout": 5000,
+      "interpoll_delay": 10
     }
   ],
   "command_server": {
@@ -30,6 +52,21 @@
     "path": "/write"
   },
   "posting": [
+    {
+      "bootstrap_servers": "localhost:9092",
+      "security_protocol": "PLAINTEXT",
+      "sasl_mechanism": "PLAIN",
+      "sasl_username": "",
+      "sasl_password": "",
+      "client_id": "ioconnect-sql",
+      "acks": "all",
+      "compression_type": "lz4",
+      "localbackup": false,
+      "backupfile": "",
+      "blocking": false,
+      "stringPosting": true,
+      "type": "redpanda"
+    },
     {
       "type": "http",
       "host": "http://127.0.0.1",

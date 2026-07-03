@@ -315,64 +315,25 @@ export default function CSVEditor({
     [allColumns, emptyRow, markDirty, normalizeRow]
   );
 
-  const openFileWithHandle = useCallback(async () => {
-    if ("showOpenFilePicker" in window) {
-      try {
-        const [handle] = await (window as any).showOpenFilePicker({
-          types: [{ description: "CSV Files", accept: { "text/csv": [".csv"] } }],
-        });
-        csvFileHandleRef.current = handle;
-        const text = await (await handle.getFile()).text();
-        const { headers, rows: parsed } = parseCSV(text);
-        if (!validateHeadersWithSchema(headers, allColumns)) {
-          toast.error("Invalid CSV: headers don't match schema");
-          return;
-        }
-        const normalized = parsed.map(normalizeRow);
-        setRows(normalized.length ? normalized : [emptyRow()]);
-        setSelectedRows(new Set());
-        markDirty();
-        toast.success(`Loaded ${parsed.length} rows`);
-      } catch { /* cancelled */ }
-    } else {
-      fileRef.current?.click();
-    }
-  }, [allColumns, emptyRow, markDirty, normalizeRow]);
+  // Plain hidden <input type=file> (handleFile parses/validates). Reliable in
+  // every context, including the embedded cross-origin iframe.
+  const openFileWithHandle = useCallback(() => {
+    fileRef.current?.click();
+  }, []);
 
   const getCSVContent = useCallback(
     () => toCSVWithSchema(rows, allColumns, new Set(visibleColumns.map((c) => c.key))),
     [rows, allColumns, visibleColumns]
   );
 
-  const saveFile = useCallback(async () => {
+  // Plain browser download — reliable in every context (incl. embedded iframe).
+  const saveFile = useCallback(() => {
     const csv = getCSVContent();
-    if (csvFileHandleRef.current) {
-      try {
-        const w = await (csvFileHandleRef.current as any).createWritable();
-        await w.write(csv); await w.close();
-        saveCSVRows(rows); setSaved(true);
-        toast.success("CSV saved to file"); return;
-      } catch { /* fall through */ }
-    }
-    if ("showSaveFilePicker" in window) {
-      try {
-        const handle = await (window as any).showSaveFilePicker({
-          suggestedName: "config.csv",
-          types: [{ description: "CSV Files", accept: { "text/csv": [".csv"] } }],
-        });
-        csvFileHandleRef.current = handle;
-        const w = await handle.createWritable();
-        await w.write(csv); await w.close();
-        saveCSVRows(rows); setSaved(true);
-        toast.success("CSV saved to file"); return;
-      } catch { /* cancelled */ }
-    } else {
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-      a.download = "config.csv"; a.click();
-      saveCSVRows(rows); setSaved(true);
-      toast.success("CSV saved");
-    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = "config.csv"; a.click();
+    saveCSVRows(rows); setSaved(true);
+    toast.success("CSV exported");
   }, [getCSVContent, rows]);
 
   const saveToServer = useCallback(async () => {
