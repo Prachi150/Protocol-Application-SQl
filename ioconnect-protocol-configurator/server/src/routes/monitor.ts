@@ -9,6 +9,13 @@ import path from "path";
 const router = Router();
 const FILES_BASE_DIR = process.env.FILES_BASE_DIR ?? ".";
 
+// When set, Live Values is driven by adapters POSTing to /api/monitor/ingest
+// instead of a Kafka/Redpanda consumer. Useful where no broker is available
+// (local/dev). The Kafka path is left fully intact for production.
+const INGEST_HTTP =
+  process.env.MONITOR_INGEST_HTTP === "1" ||
+  process.env.MONITOR_INGEST_HTTP === "true";
+
 interface TagSnapshot {
   device: string;
   tag: string;
@@ -217,6 +224,35 @@ async function startConsumer() {
   }
 }
 
+// Update the cache + push to SSE clients from a single adapter payload.
+// Shared shape with the Kafka path: { device, time, data: [{ tag, value }] }.
+function ingestPayload(payload: any): number {
+  if (!payload || !payload.device) return 0;
+  const device: string = payload.device;
+  const tsMs: number = typeof payload.time === "number" ? payload.time : Date.now();
+  const timestamp = new Date(tsMs).toISOString();
+  const updates: TagSnapshot[] = [];
+  for (const item of payload.data ?? []) {
+    if (item?.tag === undefined) continue;
+    const snap: TagSnapshot = { device, tag: String(item.tag), value: String(item.value), timestamp };
+    cache.set(`${device}::${snap.tag}`, snap);
+    updates.push(snap);
+  }
+  if (updates.length > 0) broadcast({ type: "update", tags: updates });
+  return updates.length;
+}
+
+// HTTP ingest endpoint — adapters POST payloads here when MONITOR_INGEST_HTTP=1.
+router.post("/ingest", (req: Request, res: Response) => {
+  try {
+    const n = ingestPayload(req.body);
+    setConsumerStatus("connected");
+    res.json({ ok: true, ingested: n });
+  } catch (err) {
+    res.status(400).json({ ok: false, error: (err as Error).message });
+  }
+});
+
 router.get("/snapshot", (_req, res) => {
   res.json({ success: true, tags: [...cache.values()] });
 });
@@ -240,6 +276,16 @@ router.get("/stream", (req: Request, res: Response) => {
 
   sseClients.add(res);
   req.on("close", () => sseClients.delete(res));
+
+  if (INGEST_HTTP) {
+    // No broker to connect to — data arrives via POST /ingest. Report connected
+    // so the UI shows a healthy monitor.
+    if (consumerStatus !== "connected") {
+      setConsumerStatus("connected");
+      res.write(`data: ${JSON.stringify({ type: "broker_connected" })}\n\n`);
+    }
+    return;
+  }
 
   // Always call startConsumer — it is idempotent when nothing has changed, and
   // will restart automatically if the CSV device list differs from what is

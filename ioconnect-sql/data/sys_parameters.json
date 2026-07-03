@@ -31,21 +31,6 @@
   },
   "posting": [
     {
-      "bootstrap_servers": "localhost:9092",
-      "security_protocol": "PLAINTEXT",
-      "sasl_mechanism": "PLAIN",
-      "sasl_username": "",
-      "sasl_password": "",
-      "client_id": "ioconnect-sql",
-      "acks": "all",
-      "compression_type": "lz4",
-      "localbackup": false,
-      "backupfile": "",
-      "blocking": false,
-      "stringPosting": true,
-      "type": "redpanda"
-    },
-    {
       "type": "http",
       "host": "http://127.0.0.1",
       "port": 8001,
@@ -59,6 +44,21 @@
       "headers": {
         "Content-Type": "application/json"
       }
+    },
+    {
+      "bootstrap_servers": "localhost:9092",
+      "security_protocol": "PLAINTEXT",
+      "sasl_mechanism": "PLAIN",
+      "sasl_username": "",
+      "sasl_password": "",
+      "client_id": "ioconnect-sql",
+      "acks": "all",
+      "compression_type": "lz4",
+      "localbackup": false,
+      "backupfile": "",
+      "blocking": false,
+      "stringPosting": true,
+      "type": "redpanda"
     }
   ]
 }

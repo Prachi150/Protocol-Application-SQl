@@ -142,7 +142,11 @@ class SQLClient:
             success = False
             for attempt in range(self.retry_count):
                 try:
-                    self.conn = pyodbc.connect(conn_str)
+                    # autocommit=True is essential for a persistent polling
+                    # connection: without it, the driver holds one long-lived
+                    # transaction and under REPEATABLE READ (MySQL/MariaDB default)
+                    # never sees rows committed by other connections after connect.
+                    self.conn = pyodbc.connect(conn_str, autocommit=True)
                     success = True
                     break
                 except Exception as e:

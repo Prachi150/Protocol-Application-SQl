@@ -87,3 +87,7 @@ pids
 # Temporary folders
 tmp/
 temp/
+
+# adapter runtime state
+ioconnect-sql/data/history.json
+ioconnect-sql/.adapter.pid

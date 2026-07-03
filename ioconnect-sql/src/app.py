@@ -246,12 +246,33 @@ def main():
         return
 
     # ── Resolve Broker Configuration ──
+    # Precedence: HTTP_POST_URL env > REDPANDA_KAFKA_ADDRESS env > posting[0] in file.
+    http_post_url = os.environ.get("HTTP_POST_URL")
     os_broker_address = os.environ.get("REDPANDA_KAFKA_ADDRESS")
     json_posting = sys_params.get("posting", [])
 
     posting_config = None
 
-    if os_broker_address:
+    if http_post_url:
+        # Route all payloads to a single HTTP endpoint (used for local monitoring
+        # via the configurator's /api/monitor/ingest, or any HTTP collector).
+        from urllib.parse import urlparse
+        u = urlparse(http_post_url)
+        posting_config = {
+            "type": "http",
+            "host": f"{u.scheme}://{u.hostname}",
+            "port": u.port or (443 if u.scheme == "https" else 80),
+            "method": "POST",
+            "timeout": 2000,
+            "path": u.path or "/",
+            "headers": {"Content-Type": "application/json"},
+            "localbackup": False,
+            "backupfile": "",
+            "blocking": False,
+            "stringPosting": True,
+        }
+        logger.info("Using HTTP post endpoint from environment", extra={"ctx": {"url": http_post_url}})
+    elif os_broker_address:
         posting_config = {
             "type": "redpanda",
             "bootstrap_servers": os_broker_address,

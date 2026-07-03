@@ -1,16 +1,27 @@
 #!/bin/bash
 # [SECTION: SERVICE LIFECYCLE — STOP]
-# Sourced .env to pick up APP_NAME (set by Jenkins / install.sh).
-# Then proxies to systemctl so the LSG-App orchestrator can stop the protocol service.
-# Called by the LSG-App via: sudo bash scripts/stop.sh
+# Stops the SQL adapter (systemd unit if present, else the direct background process).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "${SCRIPT_DIR}")"
 CONFIG_FILE="${PROJECT_ROOT}/.env"
+[ -f "${CONFIG_FILE}" ] && { set -a; source "${CONFIG_FILE}"; set +a; }
 
-if [ -f "${CONFIG_FILE}" ]; then
-    set -a; source "${CONFIG_FILE}"; set +a
+SVC="${APP_NAME:-ioconnect-sql}"
+
+# ── Production path ──
+if command -v systemctl >/dev/null 2>&1 && systemctl cat "${SVC}.service" >/dev/null 2>&1; then
+    systemctl stop "${SVC}.service"
+    exit $?
 fi
 
-# REPLACE: Update the fallback name to match your APP_NAME default in .env.example.
-SVC="${APP_NAME:-ioconnect-sql}"  # REPLACE
-systemctl stop "${SVC}.service"
+# ── Local/dev path ──
+PIDFILE="${PROJECT_ROOT}/.adapter.pid"
+if [ -f "${PIDFILE}" ] && kill -0 "$(cat "${PIDFILE}")" 2>/dev/null; then
+    kill "$(cat "${PIDFILE}")" 2>/dev/null
+    rm -f "${PIDFILE}"
+    echo "ioconnect-sql stopped"
+else
+    rm -f "${PIDFILE}"
+    echo "ioconnect-sql not running"
+fi
+exit 0
